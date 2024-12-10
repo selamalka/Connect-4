@@ -86,10 +86,18 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        EndTurn(row, column);
+        // Check for a draw
+        if (gridManager.CheckDraw())
+        {
+            Debug.Log("It's a draw!");
+            // Handle draw logic (e.g., display a message, end the game)
+            return;
+        }
+
+        EndTurn();
     }
 
-    private void EndTurn(int row, int column)
+    private void EndTurn()
     {
         // Check win conditions here (if applicable)
         SwitchCurrentPlayer();

@@ -145,4 +145,23 @@ public class GridManager : MonoBehaviour
         Debug.LogError($"Column {column} is full but was not detected earlier!");
         return -1; // Column is full (should not happen if IsColumnFull was checked)
     }
+
+    public bool CheckDraw()
+    {
+        for (int row = 0; row < rows; row++)
+        {
+            for (int col = 0; col < columns; col++)
+            {
+                if (GetCell(row, col).PlayerInCell == PlayerColor.None)
+                {
+                    // Found an empty cell, so it's not a draw
+                    return false;
+                }
+            }
+        }
+
+        // No empty cells found, it's a draw
+        return true;
+    }
+
 }
