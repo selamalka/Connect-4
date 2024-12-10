@@ -1,5 +1,4 @@
 using MoonActive.Connect4;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GridManager : MonoBehaviour

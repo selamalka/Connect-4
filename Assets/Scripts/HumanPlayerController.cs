@@ -1,10 +1,6 @@
-using MoonActive.Connect4;
-using System;
-using System.Collections;
-using UnityEngine;
 
 public class HumanPlayerController : BasePlayerController
-{    
+{
     private void OnDisable()
     {
         GameManager.GetConnectGameGrid().ColumnClicked -= HandleColumnClicked;
@@ -15,31 +11,18 @@ public class HumanPlayerController : BasePlayerController
         GameManager.GetConnectGameGrid().ColumnClicked += HandleColumnClicked;
     }
 
-    public override void MakeMove()
+    private void HandleColumnClicked(int column)
     {
-        StartCoroutine(WaitForPlayerInput());
-    }
-
-    private IEnumerator WaitForPlayerInput()
-    {
-        bool moveMade = false;
-
-        while (!moveMade)
+        if (IsMyTurn())
         {
-            if (Input.GetMouseButtonDown(0))
-            {
-                print("move was made");
-                GameManager.OnTurnEnded?.Invoke(PlayerColor);
-                moveMade = true;
-            }
-            yield return null;
+            MakeMove(column); 
         }
     }
 
-    private void HandleColumnClicked(int column)
+    public override void MakeMove(int column)
     {
-        Disk diskPrefab = GameManager.GetDiskByPlayerColor(PlayerColor);
-        ConnectGameGrid.Spawn(diskPrefab, column, 0);
+        print($"{PlayerColor} made a move");
+        GameManager.OnTurnEnded?.Invoke(PlayerColor);
     }
 }
 

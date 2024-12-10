@@ -408,8 +408,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayerColor: 0
-  <IsHuman>k__BackingField: 1
-  ConnectGameGrid: {fileID: 0}
   GameManager: {fileID: 0}
 --- !u!4 &300417493
 Transform:
@@ -482,30 +480,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 824850564}
-  - component: {fileID: 824850563}
+  - component: {fileID: 824850565}
   m_Layer: 0
-  m_Name: Player 2 - AI
+  m_Name: Player 2 - Human
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &824850563
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 824850562}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 09955845bb7bbf941ae1719521069c7f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  PlayerColor: 1
-  <IsHuman>k__BackingField: 0
-  ConnectGameGrid: {fileID: 0}
-  GameManager: {fileID: 0}
 --- !u!4 &824850564
 Transform:
   m_ObjectHideFlags: 0
@@ -521,6 +503,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &824850565
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 824850562}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39583450fe2997a4e89fb30c387394a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PlayerColor: 1
+  GameManager: {fileID: 0}
 --- !u!1 &902084848
 GameObject:
   m_ObjectHideFlags: 0
@@ -565,11 +561,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7835454392941f44dad582ad58d5ab9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <CurrentPlayer>k__BackingField: 0
   openingPlayer: 0
-  currentPlayer: 0
   playerControllers:
   - {fileID: 300417492}
-  - {fileID: 824850563}
+  - {fileID: 824850565}
   gridManager: {fileID: 345306701}
   connectGameGrid: {fileID: 1093071871}
   blueDiskPrefab: {fileID: 640818935044631352, guid: 298ef72a6257245069ad0952492ef4dd, type: 3}

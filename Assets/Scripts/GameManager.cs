@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    [Header("Players")]
+    [field: Header("Players")]
+    [field: SerializeField] public PlayerColor CurrentPlayer { get; private set; }
     [SerializeField] private PlayerColor openingPlayer;
-    [SerializeField] private PlayerColor currentPlayer;
     [SerializeField] private BasePlayerController[] playerControllers;
 
     [Header("Grid")]
@@ -17,7 +17,6 @@ public class GameManager : MonoBehaviour
     [Header("Prefabs")]
     [SerializeField] private Disk blueDiskPrefab;
     [SerializeField] private Disk redDiskPrefab;
-
 
     public static Action<PlayerColor> OnTurnEnded;
 
@@ -36,29 +35,40 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         SetOpeningPlayer(openingPlayer);
-        StartGame();
-    }
-
-    public void StartGame()
-    {
-        // Implement turn order logic here with a state machine
     }
 
     private void HandleColumnClick(int column)
     {
-        Disk diskPrefab = (currentPlayer == PlayerColor.Blue) ? blueDiskPrefab : redDiskPrefab;
+        Disk diskPrefab = (CurrentPlayer == PlayerColor.Blue) ? blueDiskPrefab : redDiskPrefab;
         connectGameGrid.Spawn(diskPrefab, column, 0);
     }
 
     private void SetOpeningPlayer(PlayerColor playerColor)
     {
         BasePlayerController firstPlayer = playerControllers.FirstOrDefault(e => e.PlayerColor == playerColor);
-        currentPlayer = firstPlayer.PlayerColor;
+        CurrentPlayer = firstPlayer.PlayerColor;
     }
 
     private void OnTurnEndedFunction(PlayerColor playerColor)
     {
-        print(playerColor);
+        // Check win condition
+
+        // Switch player if the game continues
+        SwitchCurrentPlayer();
+    }
+
+    private void SwitchCurrentPlayer()
+    {
+        // Find the index of the current player in the array
+        int currentIndex = Array.FindIndex(playerControllers, player => player.PlayerColor == CurrentPlayer);
+
+        // Calculate the next index (wrap around using modulo)
+        int nextIndex = (currentIndex + 1) % playerControllers.Length;
+        print(nextIndex);
+        // Update the current player to the next one
+        CurrentPlayer = playerControllers[nextIndex].PlayerColor;
+
+        Debug.Log($"Current player switched to: {CurrentPlayer}");
     }
 
     public Disk GetDiskByPlayerColor(PlayerColor playerColor)
