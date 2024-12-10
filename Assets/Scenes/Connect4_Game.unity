@@ -561,13 +561,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7835454392941f44dad582ad58d5ab9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  openingPlayer: 0
   players:
   - {fileID: 300417492}
   - {fileID: 824850563}
   gridManager: {fileID: 345306701}
   connectGameGrid: {fileID: 1093071871}
-  player1DiskPrefab: {fileID: 640818935044631352, guid: 298ef72a6257245069ad0952492ef4dd, type: 3}
-  player2DiskPrefab: {fileID: 3399353981605549623, guid: 45d4e2e49d2e049cab5a70277671aa16, type: 3}
+  blueDiskPrefab: {fileID: 640818935044631352, guid: 298ef72a6257245069ad0952492ef4dd, type: 3}
+  redDiskPrefab: {fileID: 3399353981605549623, guid: 45d4e2e49d2e049cab5a70277671aa16, type: 3}
 --- !u!114 &1093071871 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1704371023184313727, guid: e7e7db9a0dde44766815aba93de248cd, type: 3}
