@@ -45,6 +45,13 @@ public class GameManager : MonoBehaviour
 
         isTurnInProgress = true;
 
+        if (gridManager.IsColumnFull(column))
+        {
+            print("Column is full");
+            isTurnInProgress = false;
+            return;
+        }
+
         // Spawn the disk and get the actual instance
         Disk spawnedDisk = (Disk)connectGameGrid.Spawn(GetDiskByPlayerColor(CurrentPlayer), column, 0);
         lastSpawnedDisk = spawnedDisk;
