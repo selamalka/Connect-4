@@ -37,9 +37,10 @@ public class GridManager : MonoBehaviour
                 cell.SetRow(row);
                 cell.SetColumn(column);
                 cell.SetState(CellState.None);
+                collider.enabled = false;
 
                 // Make sure only the bottom row's colliders will be enabled at the beginning
-                if (cell.Row != rows) collider.enabled = false;
+                if (cell.Row == 0) collider.enabled = true;
 
                 // Add to the gridCells array for tracking
                 gridCells[row, column] = cell;
