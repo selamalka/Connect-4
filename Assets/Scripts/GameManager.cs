@@ -20,6 +20,8 @@ public class GameManager : MonoBehaviour
 
     private bool isTurnInProgress = false;
     private Disk lastSpawnedDisk;
+    private int lastColumn;
+    private int lastRow;
 
     private void OnEnable()
     {
@@ -52,6 +54,12 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        // Determine the row where the disk will land
+        int row = gridManager.GetNextAvailableRow(column);
+
+        lastRow = row;
+        lastColumn = column;
+
         // Spawn the disk and get the actual instance
         Disk spawnedDisk = (Disk)connectGameGrid.Spawn(GetDiskByPlayerColor(CurrentPlayer), column, 0);
         lastSpawnedDisk = spawnedDisk;
@@ -59,22 +67,34 @@ public class GameManager : MonoBehaviour
         if (lastSpawnedDisk != null)
         {
             // Subscribe to the StoppedFalling event of the spawned disk
-            lastSpawnedDisk.StoppedFalling += OnStoppedFalling;
+            lastSpawnedDisk.StoppedFalling += OnStoppedFallingWrapper;
         }
     }
 
-    private void OnStoppedFalling()
+    private void OnStoppedFallingWrapper()
     {
-        EndTurn();
+        OnStoppedFalling(lastRow, lastColumn);
     }
 
-    private void EndTurn()
+    private void OnStoppedFalling(int row, int column)
+    {
+        // Check for a win after the disk has landed
+        if (gridManager.CheckWin(row, column, CurrentPlayer))
+        {
+            Debug.Log($"Player {CurrentPlayer} wins!");
+            // Handle win logic (e.g., display a message, end the game)
+            return;
+        }
+
+        EndTurn(row, column);
+    }
+
+    private void EndTurn(int row, int column)
     {
         // Check win conditions here (if applicable)
         SwitchCurrentPlayer();
         isTurnInProgress = false; // Allow the next turn to proceed
-
-        lastSpawnedDisk.StoppedFalling -= OnStoppedFalling;
+        lastSpawnedDisk.StoppedFalling -= OnStoppedFallingWrapper;
     }
 
     private void SwitchCurrentPlayer()
