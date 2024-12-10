@@ -53,7 +53,7 @@ public class GameManager : MonoBehaviour
         connectGameGrid.Spawn(diskPrefab, column, 0);
 
         // Trigger turn end after successful spawn
-        OnTurnEnded?.Invoke(CurrentPlayer);
+        //OnTurnEnded?.Invoke(CurrentPlayer);
     }
 
     private void OnTurnEndedFunction(PlayerColor playerColor)
