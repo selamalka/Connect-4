@@ -37,6 +37,7 @@ public class GridManager : MonoBehaviour
                 cell.SetRow(row);
                 cell.SetColumn(column);
                 cell.SetState(PlayerColor.None);
+
                 collider.enabled = false;
 
                 // Make sure only the bottom row's colliders will be enabled at the beginning
@@ -57,17 +58,5 @@ public class GridManager : MonoBehaviour
             return null;
 
         return gridCells[row, column];
-    }
-
-    /// <summary>
-    /// Update the state of a specific cell.
-    /// </summary>
-    public void UpdateCellState(int row, int column, PlayerColor state)
-    {
-        Cell cell = GetCell(row, column);
-        if (cell != null)
-        {
-            cell.SetState(state);
-        }
     }
 }
