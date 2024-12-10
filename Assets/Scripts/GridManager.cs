@@ -36,7 +36,7 @@ public class GridManager : MonoBehaviour
                 // Assign row, column, and initial state
                 cell.SetRow(row);
                 cell.SetColumn(column);
-                cell.SetState(PlayerColor.None);
+                cell.SetPlayerInCell(PlayerColor.None);
 
                 collider.enabled = false;
 

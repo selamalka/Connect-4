@@ -19,19 +19,20 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Disk redDiskPrefab;
 
     private bool isTurnInProgress = false;
+    private Disk lastSpawnedDisk;
 
     public static Action<PlayerColor> OnTurnEnded;
 
     private void OnEnable()
     {
         connectGameGrid.ColumnClicked += HandleColumnClick;
-        OnTurnEnded += OnTurnEndedFunction;
+        OnTurnEnded += EndTurn;
     }
 
     private void OnDisable()
     {
         connectGameGrid.ColumnClicked -= HandleColumnClick;
-        OnTurnEnded -= OnTurnEndedFunction;
+        OnTurnEnded -= EndTurn;
     }
 
     private void Start()
@@ -48,19 +49,29 @@ public class GameManager : MonoBehaviour
 
         isTurnInProgress = true;
 
-        // Spawn the disk
-        Disk diskPrefab = GetDiskByPlayerColor(CurrentPlayer);
-        connectGameGrid.Spawn(diskPrefab, column, 0);
+        // Spawn the disk and get the actual instance
+        Disk spawnedDisk = (Disk)connectGameGrid.Spawn(GetDiskByPlayerColor(CurrentPlayer), column, 0);
+        lastSpawnedDisk = spawnedDisk;
 
-        // Trigger turn end after successful spawn
-        //OnTurnEnded?.Invoke(CurrentPlayer);
+        if (lastSpawnedDisk != null)
+        {
+            // Subscribe to the StoppedFalling event of the spawned disk
+            lastSpawnedDisk.StoppedFalling += OnStoppedFalling;
+        }
     }
 
-    private void OnTurnEndedFunction(PlayerColor playerColor)
+    private void OnStoppedFalling()
+    {
+        EndTurn(CurrentPlayer);
+    }
+
+    private void EndTurn(PlayerColor playerColor)
     {
         // Check win conditions here (if applicable)
         SwitchCurrentPlayer();
         isTurnInProgress = false; // Allow the next turn to proceed
+
+        lastSpawnedDisk.StoppedFalling -= OnStoppedFalling;
     }
 
     private void SwitchCurrentPlayer()
@@ -91,8 +102,6 @@ public class GameManager : MonoBehaviour
 
         return null;
     }
-
-    public ConnectGameGrid GetConnectGameGrid() => connectGameGrid;
 
     private void SetOpeningPlayer(PlayerColor playerColor)
     {
