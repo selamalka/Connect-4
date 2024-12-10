@@ -2,7 +2,11 @@ using UnityEngine;
 
 public class Cell : MonoBehaviour
 {
-    public int row;
-    public int column;
-    public int state = 0; // 0 = empty, 1 = player 1, 2 = player 2
+    [field: SerializeField] public int Row { get; private set; }
+    [field: SerializeField] public int Column { get; private set; }
+    [field: SerializeField] public CellState State { get; private set; }
+
+    public void SetRow(int row) { Row = row; }
+    public void SetColumn(int column) {  Column = column; }
+    public void SetState(CellState state) {  State = state; }
 }

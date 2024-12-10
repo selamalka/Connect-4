@@ -1,17 +1,16 @@
 using MoonActive.Connect4;
-using System;
+using System.Linq;
 using UnityEngine;
 
 public class TurnManager : MonoBehaviour
 {
-    [SerializeField] private BasePlayerController player1;
-    [SerializeField] private BasePlayerController player2;
+    [SerializeField] private BasePlayerController[] players;
     [SerializeField] private GridManager gridManager;
     [SerializeField] private ConnectGameGrid connectGameGrid;
     [SerializeField] private Disk player1DiskPrefab;
     [SerializeField] private Disk player2DiskPrefab;
 
-    private int currentPlayer = 1;
+    private int currentPlayer;
 
     private void OnEnable()
     {
@@ -25,7 +24,14 @@ public class TurnManager : MonoBehaviour
 
     private void Start()
     {
+        SetOpeningPlayer(PlayerColor.Blue);
         StartGame();
+    }
+
+    private void SetOpeningPlayer(PlayerColor playerColor)
+    {
+        BasePlayerController firstPlayer = players.FirstOrDefault(e => e.Color == playerColor);
+        currentPlayer = firstPlayer.Id;
     }
 
     public void StartGame()
@@ -35,22 +41,13 @@ public class TurnManager : MonoBehaviour
 
     private void StartTurn()
     {
-        if (currentPlayer == 1)
-        {
-            player1.MakeMove();
-        }
-        else
-        {
-            player2.MakeMove();
-        }
+
     }
 
     private void HandleColumnClick(int column)
     {
         Disk diskPrefab = (currentPlayer == 1) ? player1DiskPrefab : player2DiskPrefab;
-        // Instantiate the disk at the correct column and row (implement this based on your grid layout)
         connectGameGrid.Spawn(diskPrefab, column, 0);
-        gridManager.UpdateGridState(0, column, currentPlayer); // Example: Update grid with the disk placement
     }
 
     /*    private void HandleMove(int column)
@@ -83,18 +80,4 @@ public class TurnManager : MonoBehaviour
                 StartTurn();
             }
         }*/
-
-    private void PlaceDisk(int column)
-    {
-        Disk diskPrefab = (currentPlayer == 1) ? player1DiskPrefab : player2DiskPrefab;
-        // Instantiate the disk at the correct column and row (implement this based on your grid layout)
-        connectGameGrid.Spawn(diskPrefab, column, 0);
-        gridManager.UpdateGridState(0, column, currentPlayer); // Example: Update grid with the disk placement
-    }
-
-    private bool CheckWinCondition()
-    {
-        // Implement your win-checking logic based on grid state
-        return false; // Placeholder
-    }
 }

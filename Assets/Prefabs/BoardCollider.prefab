@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2069055445240546611}
   - component: {fileID: 8615317200249594759}
   - component: {fileID: 8760200645658798320}
+  - component: {fileID: 7263847847765159172}
   m_Layer: 5
   m_Name: BoardCollider
   m_TagString: Untagged
@@ -124,3 +125,18 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 141, y: 5}
   m_EdgeRadius: 0
+--- !u!114 &7263847847765159172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5481798148002608083}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23417a7527b781f47a8bfc8226f9b0c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <Row>k__BackingField: 0
+  <Column>k__BackingField: 0
+  state: 0
