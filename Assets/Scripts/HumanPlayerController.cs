@@ -17,7 +17,9 @@ public class HumanPlayerController : BasePlayerController
         {
             if (Input.GetMouseButtonDown(0))
             {
-                print("hi");
+                print("move was made");
+                TurnManager.OnTurnEnded?.Invoke(Id);
+                moveMade = true;
             }
             yield return null;
         }
