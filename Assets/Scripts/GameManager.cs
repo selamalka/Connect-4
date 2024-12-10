@@ -21,18 +21,14 @@ public class GameManager : MonoBehaviour
     private bool isTurnInProgress = false;
     private Disk lastSpawnedDisk;
 
-    public static Action<PlayerColor> OnTurnEnded;
-
     private void OnEnable()
     {
         connectGameGrid.ColumnClicked += HandleColumnClick;
-        OnTurnEnded += EndTurn;
     }
 
     private void OnDisable()
     {
         connectGameGrid.ColumnClicked -= HandleColumnClick;
-        OnTurnEnded -= EndTurn;
     }
 
     private void Start()
@@ -62,10 +58,10 @@ public class GameManager : MonoBehaviour
 
     private void OnStoppedFalling()
     {
-        EndTurn(CurrentPlayer);
+        EndTurn();
     }
 
-    private void EndTurn(PlayerColor playerColor)
+    private void EndTurn()
     {
         // Check win conditions here (if applicable)
         SwitchCurrentPlayer();
