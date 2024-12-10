@@ -34,7 +34,6 @@ public class GameManager : MonoBehaviour
         OnTurnEnded -= OnTurnEndedFunction;
     }
 
-
     private void Start()
     {
         SetOpeningPlayer(openingPlayer);

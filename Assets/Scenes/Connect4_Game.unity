@@ -408,7 +408,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayerColor: 0
-  GameManager: {fileID: 0}
 --- !u!4 &300417493
 Transform:
   m_ObjectHideFlags: 0
@@ -516,7 +515,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayerColor: 1
-  GameManager: {fileID: 0}
 --- !u!1 &902084848
 GameObject:
   m_ObjectHideFlags: 0

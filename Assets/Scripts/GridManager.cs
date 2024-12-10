@@ -19,7 +19,7 @@ public class GridManager : MonoBehaviour
         // Ensure gridCells matches the expected grid dimensions
         gridCells = new Cell[rows, columns];
 
-        // Retrieve the list of cell colliders from ConnectGameGrid
+        // Retrieve the array of cell colliders from ConnectGameGrid
         var cellColliders = connectGameGrid.GetComponentsInChildren<Collider2D>();
 
         for (int i = 0; i < cellColliders.Length; i++)
@@ -37,6 +37,9 @@ public class GridManager : MonoBehaviour
                 cell.SetRow(row);
                 cell.SetColumn(column);
                 cell.SetState(CellState.None);
+
+                // Make sure only the bottom row's colliders will be enabled at the beginning
+                if (cell.Row != rows) collider.enabled = false;
 
                 // Add to the gridCells array for tracking
                 gridCells[row, column] = cell;
