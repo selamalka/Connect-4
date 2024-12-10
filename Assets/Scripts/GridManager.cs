@@ -1,11 +1,14 @@
+using MoonActive.Connect4;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GridManager : MonoBehaviour
 {
-    private int[,] gridState;
+    [SerializeField] private ConnectGameGrid connectGameGrid; // Reference to ConnectGameGrid
     [SerializeField] private int rows = 6;
     [SerializeField] private int columns = 7;
+
+    private Cell[,] gridCells; // 2D array to manage Cell components
 
     private void Start()
     {
@@ -14,36 +17,54 @@ public class GridManager : MonoBehaviour
 
     private void InitializeGrid()
     {
-        gridState = new int[rows, columns];
-    }
+        // Ensure gridCells matches the expected grid dimensions
+        gridCells = new Cell[rows, columns];
 
-    public bool IsColumnAvailable(int column)
-    {
-        for (int row = 0; row < rows; row++)
+        // Retrieve the list of cell colliders from ConnectGameGrid
+        var cellColliders = connectGameGrid.GetComponentsInChildren<Collider2D>();
+
+        for (int i = 0; i < cellColliders.Length; i++)
         {
-            if (gridState[row, column] == 0)
-                return true;
+            Collider2D collider = cellColliders[i];
+            Cell cell = collider.GetComponent<Cell>();
+
+            if (cell != null)
+            {
+                // Calculate the row and column for this cell
+                int row = i / columns;
+                int column = i % columns;
+
+                // Assign row, column, and initial state
+                cell.SetRow(row);
+                cell.SetColumn(column);
+                cell.SetState(CellState.None);
+
+                // Add to the gridCells array for tracking
+                gridCells[row, column] = cell;
+            }
         }
-        return false;
     }
 
-    public void UpdateGridState(int row, int column, int player)
+    /// <summary>
+    /// Get the Cell at a specific grid position.
+    /// </summary>
+    public Cell GetCell(int row, int column)
     {
-        gridState[row, column] = player;
+        if (row < 0 || row >= rows || column < 0 || column >= columns)
+            return null;
+
+        return gridCells[row, column];
     }
 
-    public bool IsBoardFull()
+    /// <summary>
+    /// Update the state of a specific cell.
+    /// </summary>
+    public void UpdateCellState(int row, int column, CellState state)
     {
-        for (int col = 0; col < columns; col++)
+        Cell cell = GetCell(row, column);
+        if (cell != null)
         {
-            if (IsColumnAvailable(col))
-                return false;
+            cell.SetState(state);
         }
-        return true;
-    }
-
-    public int[,] GetGridState()
-    {
-        return gridState;
     }
 }

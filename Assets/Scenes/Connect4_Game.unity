@@ -453,6 +453,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ada5923023eca7c4392f4ee8f82f99a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  connectGameGrid: {fileID: 1093071871}
   rows: 6
   columns: 7
 --- !u!4 &345306702
