@@ -37,6 +37,7 @@ public class GridManager : MonoBehaviour
                 cell.SetRow(row);
                 cell.SetColumn(column);
                 cell.SetPlayerInCell(PlayerColor.None);
+                cell.SetGridManager(this);
 
                 collider.enabled = false;
 
@@ -58,5 +59,18 @@ public class GridManager : MonoBehaviour
             return null;
 
         return gridCells[row, column];
+    }
+
+    public bool IsColumnFull(int column)
+    {
+        for (int i = 0; i < rows; i++)
+        {
+            if (GetCell(i, column).PlayerInCell == PlayerColor.None)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
