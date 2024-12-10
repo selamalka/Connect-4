@@ -15,6 +15,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Disk_B
       objectReference: {fileID: 0}
+    - target: {fileID: 2865976942856219479, guid: 45d4e2e49d2e049cab5a70277671aa16, type: 3}
+      propertyPath: <Color>k__BackingField
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2865976942856219479, guid: 45d4e2e49d2e049cab5a70277671aa16, type: 3}
+      propertyPath: <DiskColor>k__BackingField
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7733842793067524161, guid: 45d4e2e49d2e049cab5a70277671aa16, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

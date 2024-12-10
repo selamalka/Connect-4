@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 362235632117993658}
   - component: {fileID: 4435405618214063861}
   - component: {fileID: 5045297020304065170}
+  - component: {fileID: 2865976942856219479}
   m_Layer: 5
   m_Name: Disk_A
   m_TagString: Untagged
@@ -128,3 +129,16 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 65
+--- !u!114 &2865976942856219479
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1065780173984695853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e81b2ea736e2e1f4bb86fd78cfc85755, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <Color>k__BackingField: 1
