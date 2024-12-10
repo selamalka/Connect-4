@@ -18,6 +18,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Disk blueDiskPrefab;
     [SerializeField] private Disk redDiskPrefab;
 
+    private bool isTurnInProgress = false;
+
     public static Action<PlayerColor> OnTurnEnded;
 
     private void OnEnable()
@@ -32,6 +34,7 @@ public class GameManager : MonoBehaviour
         OnTurnEnded -= OnTurnEndedFunction;
     }
 
+
     private void Start()
     {
         SetOpeningPlayer(openingPlayer);
@@ -39,22 +42,26 @@ public class GameManager : MonoBehaviour
 
     private void HandleColumnClick(int column)
     {
-        Disk diskPrefab = (CurrentPlayer == PlayerColor.Blue) ? blueDiskPrefab : redDiskPrefab;
-        connectGameGrid.Spawn(diskPrefab, column, 0);
-    }
+        if (isTurnInProgress)
+        {
+            return; // Prevent multiple triggers in the same turn
+        }
 
-    private void SetOpeningPlayer(PlayerColor playerColor)
-    {
-        BasePlayerController firstPlayer = playerControllers.FirstOrDefault(e => e.PlayerColor == playerColor);
-        CurrentPlayer = firstPlayer.PlayerColor;
+        isTurnInProgress = true;
+
+        // Spawn the disk
+        Disk diskPrefab = GetDiskByPlayerColor(CurrentPlayer);
+        connectGameGrid.Spawn(diskPrefab, column, 0);
+
+        // Trigger turn end after successful spawn
+        OnTurnEnded?.Invoke(CurrentPlayer);
     }
 
     private void OnTurnEndedFunction(PlayerColor playerColor)
     {
-        // Check win condition
-
-        // Switch player if the game continues
+        // Check win conditions here (if applicable)
         SwitchCurrentPlayer();
+        isTurnInProgress = false; // Allow the next turn to proceed
     }
 
     private void SwitchCurrentPlayer()
@@ -64,11 +71,9 @@ public class GameManager : MonoBehaviour
 
         // Calculate the next index (wrap around using modulo)
         int nextIndex = (currentIndex + 1) % playerControllers.Length;
-        print(nextIndex);
+
         // Update the current player to the next one
         CurrentPlayer = playerControllers[nextIndex].PlayerColor;
-
-        Debug.Log($"Current player switched to: {CurrentPlayer}");
     }
 
     public Disk GetDiskByPlayerColor(PlayerColor playerColor)
@@ -82,9 +87,17 @@ public class GameManager : MonoBehaviour
                 return redDiskPrefab;
                 
             default:
-                return null;
+                break;
         }
+
+        return null;
     }
 
-    public ConnectGameGrid GetConnectGameGrid() { return connectGameGrid; }    
+    public ConnectGameGrid GetConnectGameGrid() => connectGameGrid;
+
+    private void SetOpeningPlayer(PlayerColor playerColor)
+    {
+        BasePlayerController firstPlayer = playerControllers.FirstOrDefault(e => e.PlayerColor == playerColor);
+        CurrentPlayer = firstPlayer.PlayerColor;
+    }
 }
