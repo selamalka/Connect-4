@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    [field: Header("Players")]
-    [field: SerializeField] public PlayerColor CurrentPlayer { get; private set; }
+    [Header("Players")]
+    [SerializeField] private PlayerColor currentPlayer;
     [SerializeField] private PlayerColor openingPlayer;
     [SerializeField] private BasePlayerController[] playerControllers;
 
@@ -20,21 +20,46 @@ public class GameManager : MonoBehaviour
 
     private bool isTurnInProgress = false;
     private Disk lastSpawnedDisk;
-    private int lastColumn;
-    private int lastRow;
+    private int lastColumnFilled;
+    private int lastRowFilled;
 
     private void OnEnable()
     {
+        UIManager.OnConfirmPressed += StartGame;
         connectGameGrid.ColumnClicked += HandleColumnClick;
     }
 
     private void OnDisable()
     {
+        UIManager.OnConfirmPressed -= StartGame;
         connectGameGrid.ColumnClicked -= HandleColumnClick;
     }
 
-    private void Start()
+    private void StartGame(GameMode gameMode)
     {
+        switch (gameMode)
+        {
+            case GameMode.PlayerVsPlayer:
+                GameObject player1Object = new GameObject("Player1");
+                HumanPlayerController player1 = player1Object.AddComponent<HumanPlayerController>();
+
+                GameObject player2Object = new GameObject("Player2");
+                HumanPlayerController player2 = player2Object.AddComponent<HumanPlayerController>();
+
+                player1.SetPlayerColor(PlayerColor.Blue);
+                player2.SetPlayerColor(PlayerColor.Red);
+
+                playerControllers = new BasePlayerController[2] { player1, player2 };
+
+                break;
+
+            case GameMode.PlayerVsComputer:
+                break;
+
+            default:
+                break;
+        }
+
         SetOpeningPlayer(openingPlayer);
     }
 
@@ -57,11 +82,11 @@ public class GameManager : MonoBehaviour
         // Determine the row where the disk will land
         int row = gridManager.GetNextAvailableRow(column);
 
-        lastRow = row;
-        lastColumn = column;
+        lastRowFilled = row;
+        lastColumnFilled = column;
 
         // Spawn the disk and get the actual instance
-        Disk spawnedDisk = (Disk)connectGameGrid.Spawn(GetDiskByPlayerColor(CurrentPlayer), column, 0);
+        Disk spawnedDisk = (Disk)connectGameGrid.Spawn(GetDiskByPlayerColor(currentPlayer), column, 0);
         lastSpawnedDisk = spawnedDisk;
 
         if (lastSpawnedDisk != null)
@@ -73,15 +98,15 @@ public class GameManager : MonoBehaviour
 
     private void OnStoppedFallingWrapper()
     {
-        OnStoppedFalling(lastRow, lastColumn);
+        OnStoppedFalling(lastRowFilled, lastColumnFilled);
     }
 
     private void OnStoppedFalling(int row, int column)
     {
         // Check for a win after the disk has landed
-        if (gridManager.CheckWin(row, column, CurrentPlayer))
+        if (gridManager.CheckWin(row, column, currentPlayer))
         {
-            Debug.Log($"Player {CurrentPlayer} wins!");
+            Debug.Log($"Player {currentPlayer} wins!");
             // Handle win logic (e.g., display a message, end the game)
             return;
         }
@@ -108,13 +133,13 @@ public class GameManager : MonoBehaviour
     private void SwitchCurrentPlayer()
     {
         // Find the index of the current player in the array
-        int currentIndex = Array.FindIndex(playerControllers, player => player.PlayerColor == CurrentPlayer);
+        int currentIndex = Array.FindIndex(playerControllers, player => player.PlayerColor == currentPlayer);
 
         // Calculate the next index (wrap around using modulo)
         int nextIndex = (currentIndex + 1) % playerControllers.Length;
 
         // Update the current player to the next one
-        CurrentPlayer = playerControllers[nextIndex].PlayerColor;
+        currentPlayer = playerControllers[nextIndex].PlayerColor;
     }
 
     public Disk GetDiskByPlayerColor(PlayerColor playerColor)
@@ -122,11 +147,11 @@ public class GameManager : MonoBehaviour
         switch (playerColor)
         {
             case PlayerColor.Blue:
-                return blueDiskPrefab;                
+                return blueDiskPrefab;
 
             case PlayerColor.Red:
                 return redDiskPrefab;
-                
+
             default:
                 break;
         }
@@ -137,6 +162,6 @@ public class GameManager : MonoBehaviour
     private void SetOpeningPlayer(PlayerColor playerColor)
     {
         BasePlayerController firstPlayer = playerControllers.FirstOrDefault(e => e.PlayerColor == playerColor);
-        CurrentPlayer = firstPlayer.PlayerColor;
+        currentPlayer = firstPlayer.PlayerColor;
     }
 }

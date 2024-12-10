@@ -9,12 +9,17 @@ public class GridManager : MonoBehaviour
 
     private Cell[,] gridCells; // 2D array to manage Cell components
 
-    private void Start()
+    private void OnEnable()
     {
-        InitializeGrid();
+        UIManager.OnConfirmPressed += InitializeGrid;
     }
 
-    private void InitializeGrid()
+    private void OnDisable()
+    {
+        UIManager.OnConfirmPressed -= InitializeGrid;
+    }
+
+    private void InitializeGrid(GameMode notInUse)
     {
         // Ensure gridCells matches the expected grid dimensions
         gridCells = new Cell[rows, columns];

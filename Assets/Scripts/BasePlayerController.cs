@@ -2,7 +2,10 @@ using UnityEngine;
 
 public abstract class BasePlayerController : MonoBehaviour
 {
-    [field: SerializeField] public PlayerColor PlayerColor;
+    [field: SerializeField] public PlayerColor PlayerColor { get; private set; }
 
-    public abstract void MakeMove(int column);
+    public void SetPlayerColor(PlayerColor color)
+    {
+        PlayerColor = color;
+    }
 }

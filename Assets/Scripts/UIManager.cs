@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class UIManager : MonoBehaviour
@@ -5,6 +6,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject mainPanel;
     [SerializeField] private GameObject board;
     [SerializeField] private GameMode gameMode;
+
+    public static event Action<GameMode> OnConfirmPressed;
 
     // Unity event
     public void MenuButton()
@@ -15,7 +18,9 @@ public class UIManager : MonoBehaviour
     // Unity event
     public void ConfirmButton()
     {
-
+        mainPanel.SetActive(false);
+        board.SetActive(true);
+        OnConfirmPressed?.Invoke(gameMode);
     }
 
     // Unity event
