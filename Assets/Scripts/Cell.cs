@@ -1,6 +1,5 @@
 using UnityEngine;
 using MoonActive.Connect4;
-using System;
 
 public class Cell : MonoBehaviour
 {
@@ -46,5 +45,4 @@ public class Cell : MonoBehaviour
         // Enable the collider of the cell above
         cellAboveCollider.enabled = true;
     }
-
 }
