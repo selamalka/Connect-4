@@ -6,7 +6,7 @@ public class AIPlayerController : BasePlayerController
     public override void MakeMove()
     {
         AIMove();
-        TurnManager.OnTurnEnded?.Invoke(Id);
+        GameManager.OnTurnEnded?.Invoke(PlayerColor);
     }
 
     private void AIMove()

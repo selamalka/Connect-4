@@ -3,11 +3,12 @@ using System;
 using System.Linq;
 using UnityEngine;
 
-public class TurnManager : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
     [Header("Players")]
     [SerializeField] private PlayerColor openingPlayer;
-    [SerializeField] private BasePlayerController[] players;
+    [SerializeField] private PlayerColor currentPlayer;
+    [SerializeField] private BasePlayerController[] playerControllers;
 
     [Header("Grid")]
     [SerializeField] private GridManager gridManager;
@@ -17,9 +18,8 @@ public class TurnManager : MonoBehaviour
     [SerializeField] private Disk blueDiskPrefab;
     [SerializeField] private Disk redDiskPrefab;
 
-    private int currentPlayerId;
 
-    public static Action<int> OnTurnEnded;
+    public static Action<PlayerColor> OnTurnEnded;
 
     private void OnEnable()
     {
@@ -46,18 +46,35 @@ public class TurnManager : MonoBehaviour
 
     private void HandleColumnClick(int column)
     {
-        Disk diskPrefab = (currentPlayerId == 1) ? blueDiskPrefab : redDiskPrefab;
+        Disk diskPrefab = (currentPlayer == PlayerColor.Blue) ? blueDiskPrefab : redDiskPrefab;
         connectGameGrid.Spawn(diskPrefab, column, 0);
     }
 
     private void SetOpeningPlayer(PlayerColor playerColor)
     {
-        BasePlayerController firstPlayer = players.FirstOrDefault(e => e.Color == playerColor);
-        currentPlayerId = firstPlayer.Id;
+        BasePlayerController firstPlayer = playerControllers.FirstOrDefault(e => e.PlayerColor == playerColor);
+        currentPlayer = firstPlayer.PlayerColor;
     }
 
-    private void OnTurnEndedFunction(int playerId)
+    private void OnTurnEndedFunction(PlayerColor playerColor)
     {
-        print(playerId);
+        print(playerColor);
     }
+
+    public Disk GetDiskByPlayerColor(PlayerColor playerColor)
+    {
+        switch (playerColor)
+        {
+            case PlayerColor.Blue:
+                return blueDiskPrefab;                
+
+            case PlayerColor.Red:
+                return redDiskPrefab;
+                
+            default:
+                return null;
+        }
+    }
+
+    public ConnectGameGrid GetConnectGameGrid() { return connectGameGrid; }    
 }
