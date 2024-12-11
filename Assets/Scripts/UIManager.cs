@@ -8,6 +8,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameMode gameMode;
 
     public static event Action<GameMode> OnConfirmPressed;
+    public static event Action OnRestartPressed;
 
     // Unity event
     public void MenuButton()
@@ -38,7 +39,8 @@ public class UIManager : MonoBehaviour
     // Unity event
     public void RestartButton()
     {
-
+        board.SetActive(true);
+        OnRestartPressed?.Invoke();
     }
 
     // Unity event
