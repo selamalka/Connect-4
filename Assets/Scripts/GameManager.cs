@@ -87,6 +87,11 @@ public class GameManager : MonoBehaviour
         playerControllers = new BasePlayerController[2] { player1, player2 };
     }
 
+    public void OnAIMoveChosen(int column)
+    {
+        // Directly call HandleColumnClick to process the AI's move
+        HandleColumnClick(column);
+    }
 
     private void HandleColumnClick(int column)
     {
@@ -99,7 +104,7 @@ public class GameManager : MonoBehaviour
 
         if (gridManager.IsColumnFull(column))
         {
-            print("Column is full");
+            Debug.Log("Column is full");
             isTurnInProgress = false;
             return;
         }
@@ -120,6 +125,39 @@ public class GameManager : MonoBehaviour
             lastSpawnedDisk.StoppedFalling += OnStoppedFallingWrapper;
         }
     }
+
+    /*    private void HandleColumnClick(int column)
+        {
+            if (isTurnInProgress)
+            {
+                return; // Prevent multiple triggers in the same turn
+            }
+
+            isTurnInProgress = true;
+
+            if (gridManager.IsColumnFull(column))
+            {
+                print("Column is full");
+                isTurnInProgress = false;
+                return;
+            }
+
+            // Determine the row where the disk will land
+            int row = gridManager.GetNextAvailableRow(column);
+
+            lastRowFilled = row;
+            lastColumnFilled = column;
+
+            // Spawn the disk and get the actual instance
+            Disk spawnedDisk = (Disk)connectGameGrid.Spawn(GetDiskByPlayerColor(currentPlayer), column, 0);
+            lastSpawnedDisk = spawnedDisk;
+
+            if (lastSpawnedDisk != null)
+            {
+                // Subscribe to the StoppedFalling event of the spawned disk
+                lastSpawnedDisk.StoppedFalling += OnStoppedFallingWrapper;
+            }
+        }*/
 
     private void OnStoppedFallingWrapper()
     {
@@ -149,11 +187,22 @@ public class GameManager : MonoBehaviour
 
     private void EndTurn()
     {
+        SwitchCurrentPlayer();
+        isTurnInProgress = false; // Allow the next turn to proceed
+        lastSpawnedDisk.StoppedFalling -= OnStoppedFallingWrapper;
+
+        // Call MakeMove for the next player (either human or AI)
+        playerControllers.First(player => player.PlayerColor == currentPlayer).MakeMove();
+    }
+
+
+/*    private void EndTurn()
+    {
         // Check win conditions here (if applicable)
         SwitchCurrentPlayer();
         isTurnInProgress = false; // Allow the next turn to proceed
         lastSpawnedDisk.StoppedFalling -= OnStoppedFallingWrapper;
-    }
+    }*/
 
     private void SwitchCurrentPlayer()
     {

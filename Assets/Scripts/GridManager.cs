@@ -5,7 +5,7 @@ public class GridManager : MonoBehaviour
 {
     [SerializeField] private ConnectGameGrid connectGameGrid; // Reference to ConnectGameGrid
     [SerializeField] private int rows = 6;
-    [SerializeField] private int columns = 7;
+    [field: SerializeField] public int Columns { get; private set; } = 7;
 
     private Cell[,] gridCells; // 2D array to manage Cell components
 
@@ -22,7 +22,7 @@ public class GridManager : MonoBehaviour
     private void InitializeGrid(GameMode notInUse)
     {
         // Ensure gridCells matches the expected grid dimensions
-        gridCells = new Cell[rows, columns];
+        gridCells = new Cell[rows, Columns];
 
         // Retrieve the array of cell colliders from ConnectGameGrid
         var cellColliders = connectGameGrid.GetComponentsInChildren<Collider2D>();
@@ -35,8 +35,8 @@ public class GridManager : MonoBehaviour
             if (cell != null)
             {
                 // Calculate the row and column for this cell
-                int row = i / columns;
-                int column = i % columns;
+                int row = i / Columns;
+                int column = i % Columns;
 
                 // Assign row, column, and initial state
                 cell.SetRow(row);
@@ -60,7 +60,7 @@ public class GridManager : MonoBehaviour
     /// </summary>
     public Cell GetCell(int row, int column)
     {
-        if (row < 0 || row >= rows || column < 0 || column >= columns)
+        if (row < 0 || row >= rows || column < 0 || column >= Columns)
             return null;
 
         return gridCells[row, column];
@@ -134,7 +134,7 @@ public class GridManager : MonoBehaviour
 
     private bool IsInBounds(int row, int col)
     {
-        return row >= 0 && row < rows && col >= 0 && col < columns;
+        return row >= 0 && row < rows && col >= 0 && col < Columns;
     }
 
     public int GetNextAvailableRow(int column)
@@ -155,7 +155,7 @@ public class GridManager : MonoBehaviour
     {
         for (int row = 0; row < rows; row++)
         {
-            for (int col = 0; col < columns; col++)
+            for (int col = 0; col < Columns; col++)
             {
                 if (GetCell(row, col).PlayerInCell == PlayerColor.None)
                 {
