@@ -776,6 +776,8 @@ MonoBehaviour:
   playerControllers: []
   gridManager: {fileID: 345306701}
   connectGameGrid: {fileID: 1093071871}
+  humanPlayerControllerPrefab: {fileID: 6375827396847202048, guid: 492cf4e95768a374bb69e6387c575b1e, type: 3}
+  aiPlayerControllerPrefab: {fileID: 4711957248497463704, guid: 5362612abd96502448acfdcacf7bbfe5, type: 3}
   blueDiskPrefab: {fileID: 640818935044631352, guid: 298ef72a6257245069ad0952492ef4dd, type: 3}
   redDiskPrefab: {fileID: 3399353981605549623, guid: 45d4e2e49d2e049cab5a70277671aa16, type: 3}
 --- !u!114 &1093071871 stripped
