@@ -28,12 +28,14 @@ public class GameManager : MonoBehaviour
     private void OnEnable()
     {
         UIManager.OnConfirmPressed += StartGame;
+        UIManager.OnRestartPressed += RestartGame;
         connectGameGrid.ColumnClicked += HandleColumnClick;
     }
 
     private void OnDisable()
     {
         UIManager.OnConfirmPressed -= StartGame;
+        UIManager.OnRestartPressed -= RestartGame;
         connectGameGrid.ColumnClicked -= HandleColumnClick;
     }
 
@@ -41,6 +43,7 @@ public class GameManager : MonoBehaviour
     {
         SetPlayers(gameMode);
         SetOpeningPlayer(openingPlayer);
+        gridManager.InitializeGrid(gameMode); // Assuming this clears the grid and prepares it
     }
 
     private void SetPlayers(GameMode gameMode)
@@ -195,14 +198,10 @@ public class GameManager : MonoBehaviour
         playerControllers.First(player => player.PlayerColor == currentPlayer).MakeMove();
     }
 
-
-/*    private void EndTurn()
+    private void RestartGame()
     {
-        // Check win conditions here (if applicable)
-        SwitchCurrentPlayer();
-        isTurnInProgress = false; // Allow the next turn to proceed
-        lastSpawnedDisk.StoppedFalling -= OnStoppedFallingWrapper;
-    }*/
+        gridManager.ClearGrid();
+    }
 
     private void SwitchCurrentPlayer()
     {

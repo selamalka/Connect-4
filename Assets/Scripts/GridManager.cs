@@ -9,17 +9,7 @@ public class GridManager : MonoBehaviour
 
     private Cell[,] gridCells; // 2D array to manage Cell components
 
-    private void OnEnable()
-    {
-        UIManager.OnConfirmPressed += InitializeGrid;
-    }
-
-    private void OnDisable()
-    {
-        UIManager.OnConfirmPressed -= InitializeGrid;
-    }
-
-    private void InitializeGrid(GameMode notInUse)
+    public void InitializeGrid(GameMode notInUse)
     {
         // Ensure gridCells matches the expected grid dimensions
         gridCells = new Cell[rows, Columns];
@@ -54,6 +44,28 @@ public class GridManager : MonoBehaviour
             }
         }
     }
+
+    public void ClearGrid()
+    {
+        var allDisks = FindObjectsOfType<Disk>();
+
+        foreach (Disk disk in allDisks)
+        {
+            Destroy(disk.gameObject);
+        }
+
+        var allCells = FindObjectsOfType<Cell>();
+
+        for (int i = 0; i < allCells.Length; i++)
+        {
+            Cell cell = allCells[i];
+            Collider2D cellCollider = cell.GetComponent<Collider2D>();
+            cell.SetPlayerInCell(PlayerColor.None);
+            cell.GetComponent<Collider2D>().enabled = false;
+            if (cell.Row == 0) cellCollider.enabled = true;
+        }
+    }
+
 
     /// <summary>
     /// Get the Cell at a specific grid position.
