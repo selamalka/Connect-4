@@ -15,6 +15,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private ConnectGameGrid connectGameGrid;
 
     [Header("Prefabs")]
+    [SerializeField] private GameObject humanPlayerControllerPrefab;
+    [SerializeField] private GameObject aiPlayerControllerPrefab;
     [SerializeField] private Disk blueDiskPrefab;
     [SerializeField] private Disk redDiskPrefab;
 
@@ -37,31 +39,54 @@ public class GameManager : MonoBehaviour
 
     private void StartGame(GameMode gameMode)
     {
+        SetPlayers(gameMode);
+        SetOpeningPlayer(openingPlayer);
+    }
+
+    private void SetPlayers(GameMode gameMode)
+    {
+        GameObject player1Object;
+        GameObject player2Object;
+
+        // Instantiate objects based on the game mode
         switch (gameMode)
         {
             case GameMode.PlayerVsPlayer:
-                GameObject player1Object = new GameObject("Player1");
-                HumanPlayerController player1 = player1Object.AddComponent<HumanPlayerController>();
-
-                GameObject player2Object = new GameObject("Player2");
-                HumanPlayerController player2 = player2Object.AddComponent<HumanPlayerController>();
-
-                player1.SetPlayerColor(PlayerColor.Blue);
-                player2.SetPlayerColor(PlayerColor.Red);
-
-                playerControllers = new BasePlayerController[2] { player1, player2 };
-
+                player1Object = Instantiate(humanPlayerControllerPrefab);
+                player2Object = Instantiate(humanPlayerControllerPrefab);
                 break;
 
             case GameMode.PlayerVsComputer:
+                player1Object = Instantiate(humanPlayerControllerPrefab);
+                player2Object = Instantiate(aiPlayerControllerPrefab);
+                break;
+
+            case GameMode.ComputerVsComputer:
+                player1Object = Instantiate(aiPlayerControllerPrefab);
+                player2Object = Instantiate(aiPlayerControllerPrefab);
                 break;
 
             default:
-                break;
+                throw new ArgumentOutOfRangeException(nameof(gameMode), "Unsupported game mode.");
         }
 
-        SetOpeningPlayer(openingPlayer);
+        // Fetch the appropriate components
+        BasePlayerController player1 = gameMode == GameMode.ComputerVsComputer
+            ? player1Object.GetComponent<AIPlayerController>()
+            : player1Object.GetComponent<HumanPlayerController>();
+
+        BasePlayerController player2 = gameMode == GameMode.PlayerVsPlayer
+            ? player2Object.GetComponent<HumanPlayerController>()
+            : player2Object.GetComponent<AIPlayerController>();
+
+        // Set player colors
+        player1.SetPlayerColor(PlayerColor.Blue);
+        player2.SetPlayerColor(PlayerColor.Red);
+
+        // Assign to the playerControllers array
+        playerControllers = new BasePlayerController[2] { player1, player2 };
     }
+
 
     private void HandleColumnClick(int column)
     {

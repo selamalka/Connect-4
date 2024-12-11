@@ -1,5 +1,6 @@
 public enum GameMode
 {
     PlayerVsPlayer,
-    PlayerVsComputer
+    PlayerVsComputer,
+    ComputerVsComputer
 }

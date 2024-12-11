@@ -168,5 +168,4 @@ public class GridManager : MonoBehaviour
         // No empty cells found, it's a draw
         return true;
     }
-
 }
