@@ -8,4 +8,7 @@ public abstract class BasePlayerController : MonoBehaviour
     {
         PlayerColor = color;
     }
+
+    // Abstract method for making a move
+    public abstract void MakeMove();
 }
