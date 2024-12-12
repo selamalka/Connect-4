@@ -82,6 +82,10 @@ public class GameManager : MonoBehaviour
             ? player2Object.GetComponent<HumanPlayerController>()
             : player2Object.GetComponent<AIPlayerController>();
 
+        // Set player indexes
+        player1.SetPlayerIndex(1);
+        player2.SetPlayerIndex(2);
+
         // Set player colors
         player1.SetPlayerColor(PlayerColor.Blue);
         player2.SetPlayerColor(PlayerColor.Red);
@@ -172,7 +176,11 @@ public class GameManager : MonoBehaviour
         // Check for a win after the disk has landed
         if (gridManager.CheckWin(row, column, currentPlayer))
         {
-            Debug.Log($"Player {currentPlayer} wins!");
+            // Find the index of the winning player by color
+            int winningPlayerIndex = playerControllers.FirstOrDefault(e => e.PlayerColor == currentPlayer).PlayerIndex;
+
+            UIManager.OnAnnouncement?.Invoke($"Player {winningPlayerIndex} wins!");
+
             // Handle win logic (e.g., display a message, end the game)
             return;
         }
@@ -180,7 +188,8 @@ public class GameManager : MonoBehaviour
         // Check for a draw
         if (gridManager.CheckDraw())
         {
-            Debug.Log("It's a draw!");
+            UIManager.OnAnnouncement?.Invoke("It's a Draw!");
+            
             // Handle draw logic (e.g., display a message, end the game)
             return;
         }
