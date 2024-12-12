@@ -200,6 +200,7 @@ public class GameManager : MonoBehaviour
 
     private void RestartGame()
     {
+        isTurnInProgress = false;
         gridManager.ClearGrid();
     }
 

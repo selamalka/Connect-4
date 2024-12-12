@@ -21,7 +21,7 @@ public class AIPlayerController : BasePlayerController
     private IEnumerator PerformAIMove()
     {
         // Simulate "thinking time" for AI
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(0.6f);
 
         // Simple AI logic: Pick the first available column
         int chosenColumn = GetRandomValidColumn();

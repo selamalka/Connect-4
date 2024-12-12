@@ -66,7 +66,6 @@ public class GridManager : MonoBehaviour
         }
     }
 
-
     /// <summary>
     /// Get the Cell at a specific grid position.
     /// </summary>
