@@ -20,13 +20,17 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Disk blueDiskPrefab;
     [SerializeField] private Disk redDiskPrefab;
 
+    public GameMode GameMode { get; private set; }
+    [field: SerializeField] public bool IsGameActive { get; private set; }
+
     private bool isTurnInProgress = false;
-    private Disk lastSpawnedDisk;
     private int lastColumnFilled;
     private int lastRowFilled;
+    private Disk lastSpawnedDisk;
 
     private void OnEnable()
     {
+        UIManager.OnSelectGameMode += SetGameMode;
         UIManager.OnConfirmPressed += StartGame;
         UIManager.OnRestartPressed += RestartGame;
         connectGameGrid.ColumnClicked += HandleColumnClick;
@@ -34,20 +38,33 @@ public class GameManager : MonoBehaviour
 
     private void OnDisable()
     {
+        UIManager.OnSelectGameMode -= SetGameMode;
         UIManager.OnConfirmPressed -= StartGame;
         UIManager.OnRestartPressed -= RestartGame;
         connectGameGrid.ColumnClicked -= HandleColumnClick;
     }
 
     private void StartGame(GameMode gameMode)
-    {
-        SetPlayers(gameMode);
-        SetOpeningPlayer(openingPlayer);
-        gridManager.InitializeGrid(gameMode); // Assuming this clears the grid and prepares it
+    {        
+        if (IsGameActive)
+        {
+            gridManager.ClearGrid();
+            isTurnInProgress = false;
+            SetPlayers(gameMode);
+            SetOpeningPlayer(openingPlayer);            
+        }
+        else
+        {            
+            IsGameActive = true;
+            SetPlayers(gameMode);
+            SetOpeningPlayer(openingPlayer);
+            gridManager.InitializeGrid(gameMode);
+        }
     }
 
     private void SetPlayers(GameMode gameMode)
     {
+        DestroyAllPlayers();
         GameObject player1Object;
         GameObject player2Object;
 
@@ -64,19 +81,17 @@ public class GameManager : MonoBehaviour
                 player2Object = Instantiate(aiPlayerControllerPrefab);
                 break;
 
-            case GameMode.ComputerVsComputer:
+/*            case GameMode.ComputerVsComputer:
                 player1Object = Instantiate(aiPlayerControllerPrefab);
                 player2Object = Instantiate(aiPlayerControllerPrefab);
-                break;
+                break;*/
 
             default:
                 throw new ArgumentOutOfRangeException(nameof(gameMode), "Unsupported game mode.");
         }
 
         // Fetch the appropriate components
-        BasePlayerController player1 = gameMode == GameMode.ComputerVsComputer
-            ? player1Object.GetComponent<AIPlayerController>()
-            : player1Object.GetComponent<HumanPlayerController>();
+        BasePlayerController player1 = player1Object.GetComponent<HumanPlayerController>();
 
         BasePlayerController player2 = gameMode == GameMode.PlayerVsPlayer
             ? player2Object.GetComponent<HumanPlayerController>()
@@ -92,6 +107,17 @@ public class GameManager : MonoBehaviour
 
         // Assign to the playerControllers array
         playerControllers = new BasePlayerController[2] { player1, player2 };
+    }
+
+    public void DestroyAllPlayers()
+    {
+        var allPlayer = FindObjectsOfType<BasePlayerController>();
+        foreach (var player in allPlayer) { Destroy(player.gameObject); }
+    }
+
+    private void SetGameMode(GameMode gameMode)
+    {
+        GameMode = gameMode;
     }
 
     public void OnAIMoveChosen(int column)
@@ -133,39 +159,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    /*    private void HandleColumnClick(int column)
-        {
-            if (isTurnInProgress)
-            {
-                return; // Prevent multiple triggers in the same turn
-            }
-
-            isTurnInProgress = true;
-
-            if (gridManager.IsColumnFull(column))
-            {
-                print("Column is full");
-                isTurnInProgress = false;
-                return;
-            }
-
-            // Determine the row where the disk will land
-            int row = gridManager.GetNextAvailableRow(column);
-
-            lastRowFilled = row;
-            lastColumnFilled = column;
-
-            // Spawn the disk and get the actual instance
-            Disk spawnedDisk = (Disk)connectGameGrid.Spawn(GetDiskByPlayerColor(currentPlayer), column, 0);
-            lastSpawnedDisk = spawnedDisk;
-
-            if (lastSpawnedDisk != null)
-            {
-                // Subscribe to the StoppedFalling event of the spawned disk
-                lastSpawnedDisk.StoppedFalling += OnStoppedFallingWrapper;
-            }
-        }*/
-
     private void OnStoppedFallingWrapper()
     {
         OnStoppedFalling(lastRowFilled, lastColumnFilled);
@@ -178,6 +171,10 @@ public class GameManager : MonoBehaviour
         {
             // Find the index of the winning player by color
             int winningPlayerIndex = playerControllers.FirstOrDefault(e => e.PlayerColor == currentPlayer).PlayerIndex;
+            gridManager.ClearGrid();
+            IsGameActive = false;
+            isTurnInProgress = false;
+            playerControllers = null;
 
             UIManager.OnAnnouncement?.Invoke($"Player {winningPlayerIndex} wins!");
 
@@ -188,13 +185,21 @@ public class GameManager : MonoBehaviour
         // Check for a draw
         if (gridManager.CheckDraw())
         {
+            gridManager.ClearGrid();
+            IsGameActive = false;
+            isTurnInProgress = false;
+            playerControllers = null;
+
             UIManager.OnAnnouncement?.Invoke("It's a Draw!");
-            
+
             // Handle draw logic (e.g., display a message, end the game)
             return;
         }
 
-        EndTurn();
+        if (IsGameActive)
+        {
+            EndTurn();
+        }
     }
 
     private void EndTurn()
@@ -211,6 +216,8 @@ public class GameManager : MonoBehaviour
     {
         isTurnInProgress = false;
         gridManager.ClearGrid();
+        SetPlayers(GameMode);
+        IsGameActive = true;
     }
 
     private void SwitchCurrentPlayer()

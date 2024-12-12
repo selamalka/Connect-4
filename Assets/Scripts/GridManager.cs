@@ -15,11 +15,18 @@ public class GridManager : MonoBehaviour
         gridCells = new Cell[rows, Columns];
 
         // Retrieve the array of cell colliders from ConnectGameGrid
-        var cellColliders = connectGameGrid.GetComponentsInChildren<Collider2D>();
+        var cellColliders = connectGameGrid.GetComponentsInChildren<Cell>();
+
+        // Validate collider count
+        if (cellColliders.Length != rows * Columns)
+        {
+            Debug.LogError($"Mismatch between colliders and grid dimensions! Expected {rows * Columns}, but found {cellColliders.Length}.");
+            return;
+        }
 
         for (int i = 0; i < cellColliders.Length; i++)
         {
-            Collider2D collider = cellColliders[i];
+            Collider2D collider = cellColliders[i].GetComponent<Collider2D>();
             Cell cell = collider.GetComponent<Cell>();
 
             if (cell != null)
@@ -27,6 +34,13 @@ public class GridManager : MonoBehaviour
                 // Calculate the row and column for this cell
                 int row = i / Columns;
                 int column = i % Columns;
+
+                // Bounds check for safety
+                if (row >= rows || column >= Columns)
+                {
+                    Debug.LogError($"Invalid grid cell assignment at index {i}: Row {row}, Column {column}");
+                    continue;
+                }
 
                 // Assign row, column, and initial state
                 cell.SetRow(row);
@@ -36,8 +50,8 @@ public class GridManager : MonoBehaviour
 
                 collider.enabled = false;
 
-                // Make sure only the bottom row's colliders will be enabled at the beginning
-                if (cell.Row == 0) collider.enabled = true;
+                // Enable colliders for the bottom row
+                if (row == 0) collider.enabled = true;
 
                 // Add to the gridCells array for tracking
                 gridCells[row, column] = cell;
