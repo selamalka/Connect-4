@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c2f7e00c4f5c754582066dfab94f229, type: 3}
   m_Name: Button Click
   m_EditorClassIdentifier: 
-  audioType: 0
-  clipName: Button Click
-  clip: {fileID: 8300000, guid: a92dbbbd6998cb842a3f124c35e38e1c, type: 3}
+  AudioType: 0
+  ClipName: Button Click
+  Clip: {fileID: 8300000, guid: a92dbbbd6998cb842a3f124c35e38e1c, type: 3}

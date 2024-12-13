@@ -138,6 +138,8 @@ public class GameManager : MonoBehaviour
             return; // Prevent multiple triggers in the same turn
         }
 
+        AudioManager.Instance.PlayAudioWithRandomPitch(AudioType.Game, "Round Click", 0.6f, 1.2f);
+
         isTurnInProgress = true;
         raycastBlocker.SetActive(true);
 
@@ -181,6 +183,8 @@ public class GameManager : MonoBehaviour
 
     private void OnStoppedFalling(int row, int column)
     {
+        AudioManager.Instance.PlayAudio(AudioType.Game, "Disk In Cell");
+
         // Check for a win after the disk has landed
         if (gridManager.CheckWin(row, column, currentPlayer))
         {

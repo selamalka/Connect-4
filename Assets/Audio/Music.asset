@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c2f7e00c4f5c754582066dfab94f229, type: 3}
   m_Name: Music
   m_EditorClassIdentifier: 
-  audioType: 2
-  clipName: Music
-  clip: {fileID: 8300000, guid: bf6ad43ba94a6c74795f473f800a2e0c, type: 3}
+  AudioType: 2
+  ClipName: Music
+  Clip: {fileID: 8300000, guid: bf6ad43ba94a6c74795f473f800a2e0c, type: 3}

@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6c2f7e00c4f5c754582066dfab94f229, type: 3}
-  m_Name: Button Enter
+  m_Name: Start Game
   m_EditorClassIdentifier: 
   AudioType: 0
-  ClipName: Button Enter
-  Clip: {fileID: 8300000, guid: f3e90bd68b5855840a253855740b7349, type: 3}
+  ClipName: Start Game
+  Clip: {fileID: 8300000, guid: 3b5318191aef48040a02c5156a7c8720, type: 3}

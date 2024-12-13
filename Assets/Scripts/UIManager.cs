@@ -77,12 +77,17 @@ public class UIManager : MonoBehaviour
 
     private async Task AnimateMenuIn()
     {
-        background.transform.DOScale(1, 0.6f).SetEase(Ease.OutBack);
-        await Task.Delay(600);
+        AudioManager.Instance.PlayAudio(AudioType.UI, "Menu In 3");
 
-        header.SetActive(true);
-        header.transform.DOScale(1f, 0.3f).SetEase(Ease.OutBack);
+        background.transform.DOScale(1, 0.4f).SetEase(Ease.OutBack);
+
         await Task.Delay(400);
+        header.SetActive(true);
+        AudioManager.Instance.PlayAudio(AudioType.UI, "Menu In 1");
+        header.transform.DOScale(1f, 0.4f).SetEase(Ease.OutBack);
+        await Task.Delay(400);
+
+        AudioManager.Instance.PlayAudio(AudioType.UI, "Menu In 2");
 
         choosePlayerPanel.SetActive(true);
         choosePlayerPanel.transform.DOScale(1f, 0.3f).SetEase(Ease.OutBack);
@@ -90,6 +95,7 @@ public class UIManager : MonoBehaviour
 
     private async Task AnimateMenuOut()
     {
+        AudioManager.Instance.PlayAudio(AudioType.UI, "Menu Out 1");
         choosePlayerPanel.transform.DOScale(0f, 0.2f).SetEase(Ease.InBack);
         await Task.Delay(200);
         choosePlayerPanel.SetActive(false);
@@ -98,10 +104,11 @@ public class UIManager : MonoBehaviour
         await Task.Delay(200);
         header.SetActive(false);
 
+        AudioManager.Instance.PlayAudio(AudioType.UI, "Menu Out 2");
+
         background.transform.DOScale(0f, 0.3f).SetEase(Ease.InBack);
         await Task.Delay(300);
     }
-
 
     private void HandleModeButtonColor()
     {
@@ -135,6 +142,7 @@ public class UIManager : MonoBehaviour
     // Unity event
     public async void ConfirmButton()
     {
+        AudioManager.Instance.PlayAudio(AudioType.UI, "Start Game");
         await Task.Delay(delayTimeAfterPress);
         await AnimateMenuOut();
         board.SetActive(true);
