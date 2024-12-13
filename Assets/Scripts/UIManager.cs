@@ -29,6 +29,7 @@ public class UIManager : MonoBehaviour
     public static Action<string> OnAnnouncement;
 
     private int delayTimeAfterPress = 250;
+
     private GameManager gameManager;
 
     private void Awake()
@@ -55,13 +56,6 @@ public class UIManager : MonoBehaviour
         OnAnnouncement -= OnAnnouncementAction;
     }
 
-    private void OnAnnouncementAction(string announcement)
-    {
-        board.SetActive(false);
-        announcementPanel.SetActive(true);
-        announcementText.text = announcement;
-    }
-
     private async void Start()
     {
         if (gameManager != null) closeButton.SetActive(gameManager.IsGameActive);
@@ -73,6 +67,13 @@ public class UIManager : MonoBehaviour
 
         buttonPanel.SetActive(true);
         board.SetActive(true);
+    }
+
+    private void OnAnnouncementAction(string announcement)
+    {
+        board.SetActive(false);
+        announcementPanel.SetActive(true);
+        announcementText.text = announcement;
     }
 
     private async Task AnimateMenuIn()
