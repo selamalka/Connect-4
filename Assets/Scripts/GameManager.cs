@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     [field: Header("Game Status")]
     [field: SerializeField] public GameMode GameMode { get; private set; }
     [field: SerializeField] public bool IsGameActive { get; private set; }
+    [field: SerializeField] public bool IsGamePaused { get; private set; }
 
     [Header("Players")]
     [SerializeField] private PlayerColor currentPlayer;
@@ -31,7 +32,6 @@ public class GameManager : MonoBehaviour
     private int lastRowFilled;
     private Disk lastSpawnedDisk;
 
-    public bool IsGamePaused { get; private set; }
 
     private void OnEnable()
     {
