@@ -56,10 +56,10 @@ public class GameManager : MonoBehaviour
             gridManager.ClearGrid();
             isTurnInProgress = false;
             SetPlayers(gameMode);
-            SetOpeningPlayer(openingPlayer);            
+            SetOpeningPlayer(openingPlayer);
         }
         else
-        {            
+        {
             IsGameActive = true;
             SetPlayers(gameMode);
             SetOpeningPlayer(openingPlayer);
@@ -70,6 +70,7 @@ public class GameManager : MonoBehaviour
     private void SetPlayers(GameMode gameMode)
     {
         DestroyAllPlayers();
+
         GameObject player1Object;
         GameObject player2Object;
 
@@ -86,21 +87,23 @@ public class GameManager : MonoBehaviour
                 player2Object = Instantiate(aiPlayerControllerPrefab);
                 break;
 
-/*            case GameMode.ComputerVsComputer:
+            case GameMode.ComputerVsComputer:
                 player1Object = Instantiate(aiPlayerControllerPrefab);
                 player2Object = Instantiate(aiPlayerControllerPrefab);
-                break;*/
+                break;
 
             default:
                 throw new ArgumentOutOfRangeException(nameof(gameMode), "Unsupported game mode.");
         }
 
         // Fetch the appropriate components
-        BasePlayerController player1 = player1Object.GetComponent<HumanPlayerController>();
+        BasePlayerController player1 = gameMode == GameMode.ComputerVsComputer ?
+            player1Object.GetComponent<AIPlayerController>() :
+            player1Object.GetComponent<HumanPlayerController>();
 
-        BasePlayerController player2 = gameMode == GameMode.PlayerVsPlayer
-            ? player2Object.GetComponent<HumanPlayerController>()
-            : player2Object.GetComponent<AIPlayerController>();
+        BasePlayerController player2 = gameMode == GameMode.PlayerVsPlayer ?
+            player2Object.GetComponent<HumanPlayerController>() :
+             player2Object.GetComponent<AIPlayerController>();
 
         // Set player indexes
         player1.SetPlayerIndex(1);
