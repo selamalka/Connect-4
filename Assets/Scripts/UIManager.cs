@@ -12,6 +12,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject closeButton;
     [SerializeField] private GameObject choosePlayerPanel;
     [SerializeField] private GameObject header;
+    [SerializeField] private GameObject background;
+    [SerializeField] private GameObject buttonPanel;
 
     [SerializeField] private Image playerVsPlayerButton;
     [SerializeField] private Image playerVsComputerButton;
@@ -32,6 +34,15 @@ public class UIManager : MonoBehaviour
     private void Awake()
     {
         gameManager = FindObjectOfType<GameManager>();
+
+        background.transform.localScale = Vector3.zero;
+        header.transform.localScale = Vector3.zero;
+        choosePlayerPanel.transform.localScale = Vector3.zero;
+
+        buttonPanel.SetActive(false);
+        board.SetActive(false);
+        header.SetActive(false);
+        choosePlayerPanel.SetActive(false);
     }
 
     private void OnEnable()
@@ -52,19 +63,45 @@ public class UIManager : MonoBehaviour
     }
 
     private async void Start()
-    {       
+    {
         if (gameManager != null) closeButton.SetActive(gameManager.IsGameActive);
         announcementPanel.SetActive(false);
+
         HandleModeButtonColor();
-        choosePlayerPanel.transform.localScale = Vector3.zero;
-        choosePlayerPanel.SetActive(true);
-        header.transform.localScale = Vector3.zero;
-        header.SetActive(true);
-        await Task.Delay(200);
-        header.transform.DOScale(1f, 0.5f).SetEase(Ease.OutBack);
-        await Task.Delay(100);
-        choosePlayerPanel.transform.DOScale(1f, 0.5f).SetEase(Ease.OutBack);
+
+        await AnimateMenuIn();
+
+        buttonPanel.SetActive(true);
+        board.SetActive(true);
     }
+
+    private async Task AnimateMenuIn()
+    {
+        background.transform.DOScale(1, 0.6f).SetEase(Ease.OutBack);
+        await Task.Delay(600);
+
+        header.SetActive(true);
+        header.transform.DOScale(1f, 0.3f).SetEase(Ease.OutBack);
+        await Task.Delay(400);
+
+        choosePlayerPanel.SetActive(true);
+        choosePlayerPanel.transform.DOScale(1f, 0.3f).SetEase(Ease.OutBack);
+    }
+
+    private async Task AnimateMenuOut()
+    {
+        choosePlayerPanel.transform.DOScale(0f, 0.2f).SetEase(Ease.InBack);
+        await Task.Delay(200);
+        choosePlayerPanel.SetActive(false);
+
+        header.transform.DOScale(0f, 0.2f).SetEase(Ease.InBack);
+        await Task.Delay(200);
+        header.SetActive(false);
+
+        background.transform.DOScale(0f, 0.3f).SetEase(Ease.InBack);
+        await Task.Delay(300);
+    }
+
 
     private void HandleModeButtonColor()
     {
@@ -90,7 +127,7 @@ public class UIManager : MonoBehaviour
     {
         await Task.Delay(delayTimeAfterPress);
         announcementPanel.SetActive(false);
-        mainPanel.SetActive(true);
+        await AnimateMenuIn();
         closeButton.SetActive(gameManager.IsGameActive);
         board.SetActive(true);
     }
@@ -99,7 +136,7 @@ public class UIManager : MonoBehaviour
     public async void ConfirmButton()
     {
         await Task.Delay(delayTimeAfterPress);
-        mainPanel.SetActive(false);
+        await AnimateMenuOut();
         board.SetActive(true);
         OnConfirmPressed?.Invoke(gameManager.GameMode);
     }

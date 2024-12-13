@@ -1185,6 +1185,7 @@ MonoBehaviour:
   audioClipData:
   - {fileID: 11400000, guid: 9f75f531bcca84a4f811f6f34a230a4d, type: 2}
   - {fileID: 11400000, guid: 05785b73b63584245bba41737609c077, type: 2}
+  - {fileID: 11400000, guid: 9e93d1c67f3b9bc4ba11984384de301f, type: 2}
 --- !u!4 &822280840
 Transform:
   m_ObjectHideFlags: 0
@@ -1623,6 +1624,8 @@ MonoBehaviour:
   closeButton: {fileID: 1373248785}
   choosePlayerPanel: {fileID: 1401851271}
   header: {fileID: 133735341}
+  background: {fileID: 206031880}
+  buttonPanel: {fileID: 30646632}
   playerVsPlayerButton: {fileID: 4919796532113792596}
   playerVsComputerButton: {fileID: 4919796532113792590}
   chosenModeColor: {r: 0.34901962, g: 1, b: 0, a: 1}
