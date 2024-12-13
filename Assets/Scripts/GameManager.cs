@@ -31,6 +31,8 @@ public class GameManager : MonoBehaviour
     private int lastRowFilled;
     private Disk lastSpawnedDisk;
 
+    public bool IsGamePaused { get; private set; }
+
     private void OnEnable()
     {
         UIManager.OnSelectGameMode += SetGameMode;
@@ -72,48 +74,22 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private BasePlayerController GetPlayerControllerByColor(PlayerColor playerColor)
-    {
-        return playerControllers.FirstOrDefault(e => e.PlayerColor == playerColor);
-    }
-
     private void SetPlayers(GameMode gameMode)
     {
+        // Destroy any existing players
         DestroyAllPlayers();
 
-        GameObject player1Object;
-        GameObject player2Object;
-
-        // Instantiate objects based on the game mode
-        switch (gameMode)
-        {
-            case GameMode.PlayerVsPlayer:
-                player1Object = Instantiate(humanPlayerControllerPrefab);
-                player2Object = Instantiate(humanPlayerControllerPrefab);
-                break;
-
-            case GameMode.PlayerVsComputer:
-                player1Object = Instantiate(humanPlayerControllerPrefab);
-                player2Object = Instantiate(aiPlayerControllerPrefab);
-                break;
-
-            case GameMode.ComputerVsComputer:
-                player1Object = Instantiate(aiPlayerControllerPrefab);
-                player2Object = Instantiate(aiPlayerControllerPrefab);
-                break;
-
-            default:
-                throw new ArgumentOutOfRangeException(nameof(gameMode), "Unsupported game mode.");
-        }
+        // Instantiate player objects based on game mode
+        GameObject player1Object = InstantiatePlayer1Object(gameMode);
+        GameObject player2Object = InstantiatePlayer2Object(gameMode);
 
         // Fetch the appropriate components
-        BasePlayerController player1 = gameMode == GameMode.ComputerVsComputer ?
-            player1Object.GetComponent<AIPlayerController>() :
-            player1Object.GetComponent<HumanPlayerController>();
+        BasePlayerController player1 = GetPlayer1Controller(player1Object, gameMode);
+        BasePlayerController player2 = GetPlayer2Controller(player2Object, gameMode);
 
-        BasePlayerController player2 = gameMode == GameMode.PlayerVsPlayer ?
-            player2Object.GetComponent<HumanPlayerController>() :
-             player2Object.GetComponent<AIPlayerController>();
+        // Set GameManager for AI players
+        InitializeAIPlayer(player1);
+        InitializeAIPlayer(player2);
 
         // Set player indexes
         player1.SetPlayerIndex(1);
@@ -125,6 +101,60 @@ public class GameManager : MonoBehaviour
 
         // Assign to the playerControllers array
         playerControllers = new BasePlayerController[2] { player1, player2 };
+    }
+
+    private GameObject InstantiatePlayer1Object(GameMode gameMode)
+    {
+        switch (gameMode)
+        {
+            case GameMode.PlayerVsPlayer:
+            case GameMode.PlayerVsComputer:
+                return Instantiate(humanPlayerControllerPrefab);
+
+            case GameMode.ComputerVsComputer:
+                return Instantiate(aiPlayerControllerPrefab);
+
+            default:
+                return null;
+        }
+    }
+
+    private GameObject InstantiatePlayer2Object(GameMode gameMode)
+    {
+        switch (gameMode)
+        {
+            case GameMode.PlayerVsPlayer:
+                return Instantiate(humanPlayerControllerPrefab);
+
+            case GameMode.PlayerVsComputer:
+            case GameMode.ComputerVsComputer:
+                return Instantiate(aiPlayerControllerPrefab);
+
+            default:
+                return null;
+        }
+    }
+
+    private BasePlayerController GetPlayer1Controller(GameObject playerObject, GameMode gameMode)
+    {
+        return gameMode == GameMode.ComputerVsComputer
+            ? playerObject.GetComponent<AIPlayerController>()
+            : playerObject.GetComponent<HumanPlayerController>();
+    }
+
+    private BasePlayerController GetPlayer2Controller(GameObject playerObject, GameMode gameMode)
+    {
+        return gameMode == GameMode.PlayerVsPlayer
+            ? playerObject.GetComponent<HumanPlayerController>()
+            : playerObject.GetComponent<AIPlayerController>();
+    }
+
+    private void InitializeAIPlayer(BasePlayerController player)
+    {
+        if (player is AIPlayerController aiPlayer)
+        {
+            aiPlayer.SetGameManager(this);
+        }
     }
 
     public void DestroyAllPlayers()
@@ -292,6 +322,11 @@ public class GameManager : MonoBehaviour
         currentPlayer = playerControllers[nextIndex].PlayerColor;
     }
 
+    private BasePlayerController GetPlayerControllerByColor(PlayerColor playerColor)
+    {
+        return playerControllers.FirstOrDefault(e => e.PlayerColor == playerColor);
+    }
+
     public Disk GetDiskByPlayerColor(PlayerColor playerColor)
     {
         switch (playerColor)
@@ -313,5 +348,15 @@ public class GameManager : MonoBehaviour
     {
         BasePlayerController firstPlayer = GetPlayerControllerByColor(playerColor);
         currentPlayer = firstPlayer.PlayerColor;
+    }
+
+    public void SetIsGamePaused(bool value)
+    {
+        IsGamePaused = value;
+
+        if (GameMode == GameMode.ComputerVsComputer && value == true)
+        {
+            GetPlayerControllerByColor(currentPlayer).MakeMove();
+        }
     }
 }
