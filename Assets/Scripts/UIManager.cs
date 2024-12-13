@@ -146,6 +146,7 @@ public class UIManager : MonoBehaviour
     // Unity event
     public async void MenuButton()
     {
+        gameManager.SetIsGamePaused(true);
         await Task.Delay(delayTimeAfterPress);
         announcementPanel.SetActive(false);
         await AnimateMenuIn();
@@ -156,6 +157,7 @@ public class UIManager : MonoBehaviour
     // Unity event
     public async void ConfirmButton()
     {
+        gameManager.SetIsGamePaused(false);
         AudioManager.Instance.PlayAudio(AudioType.UI, "Start Game");
         await Task.Delay(delayTimeAfterPress);
         await AnimateMenuOut();
@@ -196,8 +198,8 @@ public class UIManager : MonoBehaviour
     // Unity event
     public async void CloseButton()
     {
+        gameManager.SetIsGamePaused(false);
         await Task.Delay(delayTimeAfterPress);
-        //mainPanel.SetActive(false);
         await AnimateMenuOut();
     }
 }

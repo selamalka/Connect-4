@@ -9,7 +9,6 @@ public class AIPlayerController : BasePlayerController
 
     private void Start()
     {
-        gameManager = FindObjectOfType<GameManager>();
         gridManager = FindObjectOfType<GridManager>();
     }
 
@@ -19,7 +18,13 @@ public class AIPlayerController : BasePlayerController
     }
 
     private IEnumerator PerformAIMove()
-    {
+    {        
+        // Wait while the game is paused
+        while (gameManager.IsGamePaused)
+        {
+            yield return null; // Wait for the next frame
+        }
+
         // Simulate "thinking time" for AI
         yield return new WaitForSeconds(0.6f);
 
@@ -53,5 +58,10 @@ public class AIPlayerController : BasePlayerController
 
         // Return a random valid column, or -1 if none are available
         return validColumns.Count > 0 ? validColumns[Random.Range(0, validColumns.Count)] : -1;
+    }
+
+    public void SetGameManager(GameManager gameManager)
+    {
+        this.gameManager = gameManager;
     }
 }
