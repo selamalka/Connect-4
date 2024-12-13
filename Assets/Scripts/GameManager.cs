@@ -1,3 +1,4 @@
+using DG.Tweening;
 using MoonActive.Connect4;
 using System;
 using System.Linq;
@@ -155,6 +156,15 @@ public class GameManager : MonoBehaviour
 
         // Spawn the disk and get the actual instance
         Disk spawnedDisk = (Disk)connectGameGrid.Spawn(GetDiskByPlayerColor(currentPlayer), column, 0);
+
+        int randomNumber = UnityEngine.Random.Range(0, 2);
+        float randomValue = randomNumber == 0 ? 270f : 90f;
+
+        spawnedDisk.transform.rotation = Quaternion.Euler(0, 0, randomValue);
+        spawnedDisk.transform.DORotate(new Vector3(0, 0, 0), 0.3f);
+
+        spawnedDisk.transform.DOPunchScale(new Vector3(0.2f, 0.2f, 0.2f), 0.2f).SetEase(Ease.OutQuad);
+
         lastSpawnedDisk = spawnedDisk;
 
         if (lastSpawnedDisk != null)
@@ -213,6 +223,7 @@ public class GameManager : MonoBehaviour
         SwitchCurrentPlayer();
         isTurnInProgress = false; // Allow the next turn to proceed
         lastSpawnedDisk.StoppedFalling -= OnStoppedFallingWrapper;
+        lastSpawnedDisk.transform.DOPunchScale(new Vector3(0.2f, 0.2f, 0.2f), 0.2f).SetEase(Ease.OutQuad);
 
         // Call MakeMove for the next player (either human or AI)
         playerControllers.First(player => player.PlayerColor == currentPlayer).MakeMove();
