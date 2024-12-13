@@ -7,20 +7,23 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-    [SerializeField] private GameObject mainPanel;
+
+    [Header("Panels")]
     [SerializeField] private GameObject board;
+    [SerializeField] private GameObject mainPanel;
     [SerializeField] private GameObject closeButton;
     [SerializeField] private GameObject choosePlayerPanel;
     [SerializeField] private GameObject header;
     [SerializeField] private GameObject background;
     [SerializeField] private GameObject buttonPanel;
-
-    [SerializeField] private Image playerVsPlayerButton;
-    [SerializeField] private Image playerVsComputerButton;
-    [SerializeField] private Color chosenModeColor;
-
     [SerializeField] private GameObject announcementPanel;
     [SerializeField] private Text announcementText;
+
+    [Header("Game Modes")]
+    [SerializeField] private Image playerVsPlayerButton;
+    [SerializeField] private Image playerVsComputerButton;
+    [SerializeField] private Image computerVsComputerButton;
+    [SerializeField] private Color chosenModeColor;
 
     public static event Action<GameMode> OnSelectGameMode;
     public static event Action<GameMode> OnConfirmPressed;
@@ -28,7 +31,6 @@ public class UIManager : MonoBehaviour
     public static Action<string> OnAnnouncement;
 
     private int delayTimeAfterPress = 250;
-
     private GameManager gameManager;
 
     private void Awake()
@@ -112,22 +114,37 @@ public class UIManager : MonoBehaviour
 
     private void HandleModeButtonColor()
     {
+        // Reset all buttons to white first
+        ResetAllButtonsColors();
+
+        // Highlight the selected mode's button
         switch (gameManager.GameMode)
         {
-            case GameMode.PlayerVsPlayer:                
+            case GameMode.PlayerVsPlayer:
                 playerVsPlayerButton.DOColor(chosenModeColor, 0.2f).SetEase(Ease.OutQuad);
-                playerVsComputerButton.DOColor(Color.white, 0.2f).SetEase(Ease.OutQuad);
                 break;
 
             case GameMode.PlayerVsComputer:
                 playerVsComputerButton.DOColor(chosenModeColor, 0.2f).SetEase(Ease.OutQuad);
-                playerVsPlayerButton.DOColor(Color.white, 0.2f).SetEase(Ease.OutQuad);
+                break;
+
+            case GameMode.ComputerVsComputer:
+                computerVsComputerButton.DOColor(chosenModeColor, 0.2f).SetEase(Ease.OutQuad);
                 break;
 
             default:
                 break;
         }
     }
+
+    // Helper function to reset all button colors
+    private void ResetAllButtonsColors()
+    {
+        playerVsPlayerButton.DOColor(Color.white, 0.2f).SetEase(Ease.OutQuad);
+        playerVsComputerButton.DOColor(Color.white, 0.2f).SetEase(Ease.OutQuad);
+        computerVsComputerButton.DOColor(Color.white, 0.2f).SetEase(Ease.OutQuad);
+    }
+
 
     // Unity event
     public async void MenuButton()
@@ -160,6 +177,13 @@ public class UIManager : MonoBehaviour
     public void PlayerVsComputerButton()
     {
         OnSelectGameMode?.Invoke(GameMode.PlayerVsComputer);
+        HandleModeButtonColor();
+    }
+
+    // Unity event
+    public void ComputerVsComputerButton()
+    {
+        OnSelectGameMode?.Invoke(GameMode.ComputerVsComputer);
         HandleModeButtonColor();
     }
 
