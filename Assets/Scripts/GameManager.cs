@@ -195,7 +195,8 @@ public class GameManager : MonoBehaviour
             isTurnInProgress = false;
             playerControllers = null;
 
-            UIManager.OnAnnouncement?.Invoke($"Player {winningPlayerIndex} wins!");
+            AudioManager.Instance.PlayAudio(AudioType.Game, "Victory");
+            UIManager.OnAnnouncement?.Invoke($"Player {winningPlayerIndex} Wins!");
 
             // Handle win logic (e.g., display a message, end the game)
             return;
