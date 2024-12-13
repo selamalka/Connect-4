@@ -12,6 +12,7 @@ public class ButtonAnimator : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     public void OnPointerClick(PointerEventData eventData)
     {
         transform.DOPunchScale(new Vector3(0.2f, 0.2f, 0.2f), 0.2f).SetEase(Ease.OutQuad);
+        AudioManager.Instance.PlayAudio(AudioType.UI, "Button Click");
     }
 
     public void OnPointerEnter(PointerEventData eventData)
