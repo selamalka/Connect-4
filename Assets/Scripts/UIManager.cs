@@ -120,15 +120,15 @@ public class UIManager : MonoBehaviour
         switch (gameManager.GameMode)
         {
             case GameMode.PlayerVsPlayer:
-                playerVsPlayerButton.DOColor(chosenModeColor, 0.2f).SetEase(Ease.OutQuad);
+                playerVsPlayerButton.color = chosenModeColor;
                 break;
 
             case GameMode.PlayerVsComputer:
-                playerVsComputerButton.DOColor(chosenModeColor, 0.2f).SetEase(Ease.OutQuad);
+                playerVsComputerButton.color = chosenModeColor;
                 break;
 
             case GameMode.ComputerVsComputer:
-                computerVsComputerButton.DOColor(chosenModeColor, 0.2f).SetEase(Ease.OutQuad);
+                computerVsComputerButton.color = chosenModeColor;
                 break;
 
             default:
@@ -139,9 +139,9 @@ public class UIManager : MonoBehaviour
     // Helper function to reset all button colors
     private void ResetAllButtonsColors()
     {
-        playerVsPlayerButton.DOColor(Color.white, 0.2f).SetEase(Ease.OutQuad);
-        playerVsComputerButton.DOColor(Color.white, 0.2f).SetEase(Ease.OutQuad);
-        computerVsComputerButton.DOColor(Color.white, 0.2f).SetEase(Ease.OutQuad);
+        playerVsPlayerButton.color = Color.white;
+        playerVsComputerButton.color = Color.white;
+        computerVsComputerButton.color = Color.white;
     }
 
     // Unity event
