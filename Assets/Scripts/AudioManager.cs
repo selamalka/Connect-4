@@ -44,6 +44,26 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    public void PlayAudioWithRandomPitch(AudioType audioType, string clipName, float minPitch = 0.9f, float maxPitch = 1.1f)
+    {
+        var clip = FindClip(audioType, clipName);
+        if (clip != null)
+        {
+            AudioSource audioSource = GetAudioSource(audioType);
+
+            // Randomize the pitch
+            float randomPitch = Random.Range(minPitch, maxPitch);
+            audioSource.pitch = randomPitch;
+
+            // Play the audio
+            audioSource.PlayOneShot(clip);
+        }
+        else
+        {
+            Debug.LogWarning($"AudioManager: Clip not found for type: {audioType}, name: {clipName}");
+        }
+    }
+
     public void PlayMusic(string clipName)
     {
         var clip = FindClip(AudioType.Music, clipName);
@@ -76,13 +96,17 @@ public class AudioManager : MonoBehaviour
 
     private AudioSource GetAudioSource(AudioType audioType)
     {
-        return audioType switch
+        switch (audioType)
         {
-            AudioType.UI => uiSource,
-            AudioType.Game => gameSource,
-            AudioType.Music => musicSource,
-            _ => throw new System.ArgumentException($"Invalid AudioType: {audioType}")
-        };
+            case AudioType.UI:
+                return uiSource;                
+            case AudioType.Game:
+                return gameSource;
+            case AudioType.Music:
+                return musicSource;
+            default:
+                return null;                
+        }
     }
 
     private AudioClip FindClip(AudioType audioType, string clipName)
@@ -99,12 +123,16 @@ public class AudioManager : MonoBehaviour
 
     private string GetMixerParameter(AudioType audioType)
     {
-        return audioType switch
+        switch (audioType)
         {
-            AudioType.UI => "UIVolume",
-            AudioType.Game => "GameVolume",
-            AudioType.Music => "MusicVolume",
-            _ => null
-        };
+            case AudioType.UI:
+                return "UIVolume";
+            case AudioType.Game:
+                return "GameVolume";
+            case AudioType.Music:
+                return "MusicVolume";
+            default:
+                return null;
+        }
     }
 }
