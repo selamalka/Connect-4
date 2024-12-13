@@ -5,6 +5,10 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    [field: Header("Game Status")]
+    [field: SerializeField] public GameMode GameMode { get; private set; }
+    [field: SerializeField] public bool IsGameActive { get; private set; }
+
     [Header("Players")]
     [SerializeField] private PlayerColor currentPlayer;
     [SerializeField] private PlayerColor openingPlayer;
@@ -13,15 +17,13 @@ public class GameManager : MonoBehaviour
     [Header("Grid")]
     [SerializeField] private GridManager gridManager;
     [SerializeField] private ConnectGameGrid connectGameGrid;
+    [SerializeField] private GameObject raycastBlocker;
 
     [Header("Prefabs")]
     [SerializeField] private GameObject humanPlayerControllerPrefab;
     [SerializeField] private GameObject aiPlayerControllerPrefab;
     [SerializeField] private Disk blueDiskPrefab;
     [SerializeField] private Disk redDiskPrefab;
-
-    public GameMode GameMode { get; private set; }
-    [field: SerializeField] public bool IsGameActive { get; private set; }
 
     private bool isTurnInProgress = false;
     private int lastColumnFilled;
@@ -45,7 +47,9 @@ public class GameManager : MonoBehaviour
     }
 
     private void StartGame(GameMode gameMode)
-    {        
+    {
+        raycastBlocker.SetActive(false);
+
         if (IsGameActive)
         {
             gridManager.ClearGrid();
@@ -134,6 +138,7 @@ public class GameManager : MonoBehaviour
         }
 
         isTurnInProgress = true;
+        raycastBlocker.SetActive(true);
 
         if (gridManager.IsColumnFull(column))
         {
@@ -204,6 +209,7 @@ public class GameManager : MonoBehaviour
 
     private void EndTurn()
     {
+        HandleRaycastBlocker();
         SwitchCurrentPlayer();
         isTurnInProgress = false; // Allow the next turn to proceed
         lastSpawnedDisk.StoppedFalling -= OnStoppedFallingWrapper;
@@ -212,12 +218,28 @@ public class GameManager : MonoBehaviour
         playerControllers.First(player => player.PlayerColor == currentPlayer).MakeMove();
     }
 
+    private void HandleRaycastBlocker()
+    {
+        BasePlayerController basePlayerContorller = playerControllers.FirstOrDefault(e => e.PlayerColor == currentPlayer);
+
+        if (basePlayerContorller.GetComponent<AIPlayerController>() != null)
+        {
+            raycastBlocker.SetActive(false);
+        }
+
+        if (GameMode == GameMode.PlayerVsPlayer)
+        {
+            raycastBlocker.SetActive(false);
+        }
+    }
+
     private void RestartGame()
     {
         isTurnInProgress = false;
         gridManager.ClearGrid();
         SetPlayers(GameMode);
         IsGameActive = true;
+        raycastBlocker.SetActive(false);
     }
 
     private void SwitchCurrentPlayer()
