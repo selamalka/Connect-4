@@ -36,6 +36,9 @@ public class AudioManager : MonoBehaviour
         var clip = FindClip(audioType, clipName);
         if (clip != null)
         {
+            AudioSource audioSource = GetAudioSource(audioType);
+            audioSource.pitch = 1f;
+            
             GetAudioSource(audioType).PlayOneShot(clip);
         }
         else
@@ -99,13 +102,13 @@ public class AudioManager : MonoBehaviour
         switch (audioType)
         {
             case AudioType.UI:
-                return uiSource;                
+                return uiSource;
             case AudioType.Game:
                 return gameSource;
             case AudioType.Music:
                 return musicSource;
             default:
-                return null;                
+                return null;
         }
     }
 
@@ -113,9 +116,9 @@ public class AudioManager : MonoBehaviour
     {
         foreach (var data in audioClipData)
         {
-            if (data.audioType == audioType && data.clipName == clipName)
+            if (data.AudioType == audioType && data.ClipName == clipName)
             {
-                return data.clip;
+                return data.Clip;
             }
         }
         return null;

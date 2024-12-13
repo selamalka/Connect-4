@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6c2f7e00c4f5c754582066dfab94f229, type: 3}
-  m_Name: Button Enter
+  m_Name: Disk In Cell
   m_EditorClassIdentifier: 
-  AudioType: 0
-  ClipName: Button Enter
-  Clip: {fileID: 8300000, guid: f3e90bd68b5855840a253855740b7349, type: 3}
+  AudioType: 1
+  ClipName: Disk In Cell
+  Clip: {fileID: 8300000, guid: b8c1bf12f1ea8dd4abf5b7bb67b43568, type: 3}
