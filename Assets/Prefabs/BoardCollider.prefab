@@ -139,4 +139,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Row>k__BackingField: 0
   <Column>k__BackingField: 0
-  state: 0
+  <PlayerInCell>k__BackingField: 0
