@@ -4,6 +4,11 @@ using UnityEngine.EventSystems;
 
 public class ButtonAnimator : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
+    private void OnEnable()
+    {
+        transform.localScale = Vector3.one;
+    }
+
     public void OnPointerClick(PointerEventData eventData)
     {
         transform.DOPunchScale(new Vector3(0.2f, 0.2f, 0.2f), 0.2f).SetEase(Ease.OutQuad);
