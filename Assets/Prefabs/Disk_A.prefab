@@ -141,4 +141,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e81b2ea736e2e1f4bb86fd78cfc85755, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <Color>k__BackingField: 1
+  <PlayerColor>k__BackingField: 1
