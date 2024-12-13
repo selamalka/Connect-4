@@ -1,13 +1,11 @@
 using DG.Tweening;
 using System;
 using System.Threading.Tasks;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-
     [Header("Panels")]
     [SerializeField] private GameObject board;
     [SerializeField] private GameObject mainPanel;
@@ -145,7 +143,6 @@ public class UIManager : MonoBehaviour
         computerVsComputerButton.DOColor(Color.white, 0.2f).SetEase(Ease.OutQuad);
     }
 
-
     // Unity event
     public async void MenuButton()
     {
@@ -200,6 +197,7 @@ public class UIManager : MonoBehaviour
     public async void CloseButton()
     {
         await Task.Delay(delayTimeAfterPress);
-        mainPanel.SetActive(false);
+        //mainPanel.SetActive(false);
+        await AnimateMenuOut();
     }
 }

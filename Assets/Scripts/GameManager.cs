@@ -65,6 +65,16 @@ public class GameManager : MonoBehaviour
             SetOpeningPlayer(openingPlayer);
             gridManager.InitializeGrid(gameMode);
         }
+
+        if (GameMode == GameMode.ComputerVsComputer)
+        {
+            GetPlayerControllerByColor(currentPlayer).MakeMove();
+        }
+    }
+
+    private BasePlayerController GetPlayerControllerByColor(PlayerColor playerColor)
+    {
+        return playerControllers.FirstOrDefault(e => e.PlayerColor == playerColor);
     }
 
     private void SetPlayers(GameMode gameMode)
@@ -150,6 +160,7 @@ public class GameManager : MonoBehaviour
         {
             Debug.Log("Column is full");
             isTurnInProgress = false;
+            raycastBlocker.SetActive(false);
             return;
         }
 
@@ -192,11 +203,9 @@ public class GameManager : MonoBehaviour
         if (gridManager.CheckWin(row, column, currentPlayer))
         {
             // Find the index of the winning player by color
-            int winningPlayerIndex = playerControllers.FirstOrDefault(e => e.PlayerColor == currentPlayer).PlayerIndex;
-            gridManager.ClearGrid();
-            IsGameActive = false;
-            isTurnInProgress = false;
-            playerControllers = null;
+            int winningPlayerIndex = GetPlayerControllerByColor(currentPlayer).PlayerIndex;
+
+            RefreshGame();
 
             AudioManager.Instance.PlayAudio(AudioType.Game, "Victory");
             UIManager.OnAnnouncement?.Invoke($"Player {winningPlayerIndex} Wins!");
@@ -208,10 +217,7 @@ public class GameManager : MonoBehaviour
         // Check for a draw
         if (gridManager.CheckDraw())
         {
-            gridManager.ClearGrid();
-            IsGameActive = false;
-            isTurnInProgress = false;
-            playerControllers = null;
+            RefreshGame();
 
             UIManager.OnAnnouncement?.Invoke("It's a Draw!");
 
@@ -225,21 +231,29 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void RefreshGame()
+    {
+        gridManager.ClearGrid();
+        IsGameActive = false;
+        isTurnInProgress = false;
+        playerControllers = null;
+    }
+
     private void EndTurn()
     {
         HandleRaycastBlocker();
         SwitchCurrentPlayer();
         isTurnInProgress = false; // Allow the next turn to proceed
         lastSpawnedDisk.StoppedFalling -= OnStoppedFallingWrapper;
-        lastSpawnedDisk.transform.DOPunchScale(new Vector3(0.2f, 0.2f, 0.2f), 0.2f).SetEase(Ease.OutQuad);
+        lastSpawnedDisk.transform.DOPunchScale(new Vector3(-0.2f, -0.2f, -0.2f), 0.2f).SetEase(Ease.OutQuad);
 
         // Call MakeMove for the next player (either human or AI)
-        playerControllers.First(player => player.PlayerColor == currentPlayer).MakeMove();
+        GetPlayerControllerByColor(currentPlayer).MakeMove();
     }
 
     private void HandleRaycastBlocker()
     {
-        BasePlayerController basePlayerContorller = playerControllers.FirstOrDefault(e => e.PlayerColor == currentPlayer);
+        BasePlayerController basePlayerContorller = GetPlayerControllerByColor(currentPlayer);
 
         if (basePlayerContorller.GetComponent<AIPlayerController>() != null)
         {
@@ -259,6 +273,11 @@ public class GameManager : MonoBehaviour
         SetPlayers(GameMode);
         IsGameActive = true;
         raycastBlocker.SetActive(false);
+
+        if (GameMode == GameMode.ComputerVsComputer)
+        {
+            GetPlayerControllerByColor(currentPlayer).MakeMove();
+        }
     }
 
     private void SwitchCurrentPlayer()
@@ -292,7 +311,7 @@ public class GameManager : MonoBehaviour
 
     private void SetOpeningPlayer(PlayerColor playerColor)
     {
-        BasePlayerController firstPlayer = playerControllers.FirstOrDefault(e => e.PlayerColor == playerColor);
+        BasePlayerController firstPlayer = GetPlayerControllerByColor(playerColor);
         currentPlayer = firstPlayer.PlayerColor;
     }
 }

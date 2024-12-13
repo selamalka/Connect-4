@@ -17,14 +17,14 @@ public class Cell : MonoBehaviour
     {
         if (collision.gameObject.GetComponent<Disk>() != null)
         {
-            PlayerColor diskColor = collision.gameObject.GetComponent<DiskIdentifier>().Color;
+            PlayerColor diskColor = collision.gameObject.GetComponent<DiskIdentifier>().PlayerColor;
             SetPlayerInCell(diskColor);
             ActivateCellColliderAbove();
         }
     }
 
     private void ActivateCellColliderAbove()
-    {
+    {        
         // Get the cell above
         Cell cellAbove = gridManager.GetCell(Row + 1, Column);
 
