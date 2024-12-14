@@ -31,6 +31,24 @@ public class AudioManager : MonoBehaviour
         PlayMusic("Music");
     }
 
+    public void PlayMusic(string clipName)
+    {
+        var clip = FindClip(AudioType.Music, clipName);
+        if (clip != null)
+        {
+            musicSource.clip = clip;
+            musicSource.Play();
+        }
+        else
+        {
+            Debug.LogWarning($"AudioManager: Music clip not found: {clipName}");
+        }
+    }
+    public void StopMusic()
+    {
+        musicSource.Stop();
+    }
+
     public void PlayAudio(AudioType audioType, string clipName)
     {
         var clip = FindClip(audioType, clipName);
@@ -46,7 +64,6 @@ public class AudioManager : MonoBehaviour
             Debug.LogWarning($"AudioManager: Clip not found for type: {audioType}, name: {clipName}");
         }
     }
-
     public void PlayAudioWithRandomPitch(AudioType audioType, string clipName, float minPitch = 0.9f, float maxPitch = 1.1f)
     {
         var clip = FindClip(audioType, clipName);
@@ -67,36 +84,6 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void PlayMusic(string clipName)
-    {
-        var clip = FindClip(AudioType.Music, clipName);
-        if (clip != null)
-        {
-            musicSource.clip = clip;
-            musicSource.Play();
-        }
-        else
-        {
-            Debug.LogWarning($"AudioManager: Music clip not found: {clipName}");
-        }
-    }
-
-    public void StopMusic()
-    {
-        musicSource.Stop();
-    }
-
-/*    public void SetVolume(AudioType audioType, float volume)
-    {
-        string mixerParameter = GetMixerParameter(audioType);
-        if (!string.IsNullOrEmpty(mixerParameter))
-        {
-            // Convert volume (0-1) to decibels for the mixer (-80 to 0)
-            float decibels = Mathf.Lerp(-80f, 0f, Mathf.Clamp01(volume));
-            audioMixer.SetFloat(mixerParameter, decibels);
-        }
-    }*/
-
     private AudioSource GetAudioSource(AudioType audioType)
     {
         switch (audioType)
@@ -111,7 +98,6 @@ public class AudioManager : MonoBehaviour
                 return null;
         }
     }
-
     private AudioClip FindClip(AudioType audioType, string clipName)
     {
         foreach (var data in audioClipData)
@@ -122,20 +108,5 @@ public class AudioManager : MonoBehaviour
             }
         }
         return null;
-    }
-
-    private string GetMixerParameter(AudioType audioType)
-    {
-        switch (audioType)
-        {
-            case AudioType.UI:
-                return "UIVolume";
-            case AudioType.Game:
-                return "GameVolume";
-            case AudioType.Music:
-                return "MusicVolume";
-            default:
-                return null;
-        }
     }
 }
