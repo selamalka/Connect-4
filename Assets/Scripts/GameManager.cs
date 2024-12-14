@@ -39,7 +39,11 @@ public class GameManager : MonoBehaviour
         UIManager.OnSelectGameMode += SetGameMode;
         UIManager.OnConfirmPressed += StartGame;
         UIManager.OnRestart += RestartGame;
-        connectGameGrid.ColumnClicked += HandleColumnClick;
+
+        if (connectGameGrid != null)
+        {
+            connectGameGrid.ColumnClicked += HandleColumnClick; 
+        }
     }
 
     private void OnDisable()
@@ -47,7 +51,11 @@ public class GameManager : MonoBehaviour
         UIManager.OnSelectGameMode -= SetGameMode;
         UIManager.OnConfirmPressed -= StartGame;
         UIManager.OnRestart -= RestartGame;
-        connectGameGrid.ColumnClicked -= HandleColumnClick;
+
+        if (connectGameGrid != null)
+        {
+            connectGameGrid.ColumnClicked -= HandleColumnClick; 
+        }
     }
 
     private void StartGame(GameMode gameMode)
