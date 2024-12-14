@@ -216,6 +216,36 @@ public class GameManager : MonoBehaviour
             raycastBlocker.SetActive(true);
         }
     }
+    private void HandleDraw()
+    {
+        RefreshGame();
+        UIManager.OnAnnouncement?.Invoke("It's a Draw!");
+    }
+    private async Task HandleWin()
+    {
+        int winningPlayerIndex = GetPlayerControllerByColor(CurrentPlayer).PlayerIndex;
+
+        RefreshGame();
+
+        float currentMusicVolume = PlayerPrefs.GetFloat("MusicVolume");
+        settingsManager.SetMusicVolumeBySettings(currentMusicVolume * 0.65f);
+
+        AudioManager.Instance.PlayAudio(AudioType.Game, "Victory");
+        UIManager.OnAnnouncement?.Invoke($"Player {winningPlayerIndex} Wins!");
+
+        await Task.Delay(2500);
+
+        settingsManager.SetMusicVolumeBySettings(currentMusicVolume);
+    }
+
+    private bool CheckWinCondition(int row, int column)
+    {
+        return gridManager.CheckWin(row, column, CurrentPlayer);
+    }
+    private bool CheckDrawCondition()
+    {
+        return gridManager.CheckDraw();
+    }
 
     public void OnAIMoveChosen(int column)
     {
@@ -230,35 +260,15 @@ public class GameManager : MonoBehaviour
     {
         AudioManager.Instance.PlayAudio(AudioType.Game, "Disk In Cell");
 
-        // Check for a win after the disk has landed
-        if (gridManager.CheckWin(row, column, CurrentPlayer))
+        if (CheckWinCondition(row, column))
         {
-            // Find the index of the winning player by color
-            int winningPlayerIndex = GetPlayerControllerByColor(CurrentPlayer).PlayerIndex;
-
-            RefreshGame();
-
-            float currentMusicVolume = PlayerPrefs.GetFloat("MusicVolume");
-
-            settingsManager.SetMusicVolumeBySettings(currentMusicVolume * 0.65f);
-            AudioManager.Instance.PlayAudio(AudioType.Game, "Victory");
-            UIManager.OnAnnouncement?.Invoke($"Player {winningPlayerIndex} Wins!");
-
-            await Task.Delay(2500);
-            settingsManager.SetMusicVolumeBySettings(currentMusicVolume);
-
-            // Handle win logic (e.g., display a message, end the game)
+            await HandleWin();
             return;
         }
 
-        // Check for a draw
-        if (gridManager.CheckDraw())
+        if (CheckDrawCondition())
         {
-            RefreshGame();
-
-            UIManager.OnAnnouncement?.Invoke("It's a Draw!");
-
-            // Handle draw logic (e.g., display a message, end the game)
+            HandleDraw();
             return;
         }
 
@@ -306,22 +316,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public Disk GetDiskByPlayerColor(PlayerColor playerColor)
-    {
-        switch (playerColor)
-        {
-            case PlayerColor.Blue:
-                return blueDiskPrefab;
-
-            case PlayerColor.Red:
-                return redDiskPrefab;
-
-            default:
-                break;
-        }
-
-        return null;
-    }
     private BasePlayerController GetPlayer2Controller(GameObject playerObject, GameMode gameMode)
     {
         return gameMode == GameMode.PlayerVsPlayer
@@ -337,6 +331,22 @@ public class GameManager : MonoBehaviour
     public BasePlayerController GetPlayerControllerByColor(PlayerColor playerColor)
     {
         return playerControllers.FirstOrDefault(e => e.PlayerColor == playerColor);
+    }
+    public Disk GetDiskByPlayerColor(PlayerColor playerColor)
+    {
+        switch (playerColor)
+        {
+            case PlayerColor.Blue:
+                return blueDiskPrefab;
+
+            case PlayerColor.Red:
+                return redDiskPrefab;
+
+            default:
+                break;
+        }
+
+        return null;
     }
 
     private void SetPlayers(GameMode gameMode)
