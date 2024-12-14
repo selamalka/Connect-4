@@ -25,7 +25,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Image computerVsComputerButton;
     [SerializeField] private Color chosenModeColor;
 
-    public static event Action<GameMode> OnSelectGameMode;
+    public static Action<GameMode> OnSelectGameMode;
     public static event Action<GameMode> OnConfirmPressed;
     public static event Action OnRestart;
     public static event Action OnSaveSettings;
@@ -35,23 +35,39 @@ public class UIManager : MonoBehaviour
 
     private int delayTimeAfterPress = 250;
 
-    private GameManager gameManager;
+    private GameManager GameManager;
 
     private void Awake()
     {
-        gameManager = FindObjectOfType<GameManager>();
+        InitializeGameManager();
+        if (GameManager != null)
+        {
+            ResetTransformScales();
+            DeactivateGameObjects();
+        }
+    }
 
-        background.transform.localScale = Vector3.zero;
-        header.transform.localScale = Vector3.zero;
-        choosePlayerPanel.transform.localScale = Vector3.zero;
-        announcementPanel.transform.localScale = Vector3.zero;
-        announcementText.transform.localScale = Vector3.zero;
-        settingsPanel.transform.localScale = Vector3.zero;
+    private void InitializeGameManager()
+    {
+        GameManager = FindObjectOfType<GameManager>();
+    }
 
-        buttonPanel.SetActive(false);
-        board.SetActive(false);
-        header.SetActive(false);
-        choosePlayerPanel.SetActive(false);
+    private void ResetTransformScales()
+    {
+        if (background != null) background.transform.localScale = Vector3.zero;
+        if (header != null) header.transform.localScale = Vector3.zero;
+        if (choosePlayerPanel != null) choosePlayerPanel.transform.localScale = Vector3.zero;
+        if (announcementPanel != null) announcementPanel.transform.localScale = Vector3.zero;
+        if (announcementText != null) announcementText.transform.localScale = Vector3.zero;
+        if (settingsPanel != null) settingsPanel.transform.localScale = Vector3.zero;
+    }
+
+    private void DeactivateGameObjects()
+    {
+        if (buttonPanel != null) buttonPanel.SetActive(false);
+        if (board != null) board.SetActive(false);
+        if (header != null) header.SetActive(false);
+        if (choosePlayerPanel != null) choosePlayerPanel.SetActive(false);
     }
 
     private void OnEnable()
@@ -66,15 +82,27 @@ public class UIManager : MonoBehaviour
 
     private async void Start()
     {
-        if (gameManager != null) closeButton.SetActive(gameManager.IsGameActive);
-        announcementPanel.SetActive(false);
+        if (GameManager != null && closeButton != null)
+        {
+            closeButton.SetActive(GameManager.IsGameActive);
+        }
 
-        HandleModeButtonColor();
+        if (GameManager != null)
+        {
+            announcementPanel.SetActive(false);
 
-        await AnimateMenuIn();
+            HandleModeButtonColor();
 
-        buttonPanel.SetActive(true);
-        board.SetActive(true);
+            await AnimateMenuIn();
+
+            buttonPanel.SetActive(true);
+            board.SetActive(true); 
+        }
+    }
+
+    public void SelectGameMode(GameMode mode)
+    {
+        OnSelectGameMode?.Invoke(mode);
     }
 
     private void OnAnnouncementAction(string announcement)
@@ -127,7 +155,7 @@ public class UIManager : MonoBehaviour
         ResetAllButtonsColors();
 
         // Highlight the selected mode's button
-        switch (gameManager.GameMode)
+        switch (GameManager.GameMode)
         {
             case GameMode.PlayerVsPlayer:
                 playerVsPlayerButton.color = chosenModeColor;
@@ -192,23 +220,23 @@ public class UIManager : MonoBehaviour
     // Unity event
     public async void MenuButton()
     {
-        gameManager.SetIsGamePaused(true);
+        GameManager.SetIsGamePaused(true);
         await Task.Delay(delayTimeAfterPress);
         announcementPanel.SetActive(false);
         await AnimateMenuIn();
-        closeButton.SetActive(gameManager.IsGameActive);
+        closeButton.SetActive(GameManager.IsGameActive);
         board.SetActive(true);
     }
 
     // Unity event
     public async void ConfirmButton()
     {
-        gameManager.SetIsGamePaused(false);
+        GameManager.SetIsGamePaused(false);
         AudioManager.Instance.PlayAudio(AudioType.UI, "Start Game");
         await Task.Delay(delayTimeAfterPress);
         await AnimateMenuOut();
         board.SetActive(true);
-        OnConfirmPressed?.Invoke(gameManager.GameMode);
+        OnConfirmPressed?.Invoke(GameManager.GameMode);
     }
 
     // Unity event
@@ -244,7 +272,7 @@ public class UIManager : MonoBehaviour
     // Unity event
     public async void CloseButton()
     {
-        gameManager.SetIsGamePaused(false);
+        GameManager.SetIsGamePaused(false);
         await Task.Delay(delayTimeAfterPress);
         await AnimateMenuOut();
     }
