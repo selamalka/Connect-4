@@ -7,10 +7,22 @@ public class SettingsManager : MonoBehaviour
     [SerializeField] private AudioMixer mainMixer;
 
     [SerializeField] private Slider musicVolumeSlider;
-    [SerializeField] private Slider gameSFXVolumeSlider;
-    [SerializeField] private Slider uiSFXVolumeSlider;
+    [SerializeField] private Slider gameVolumeSlider;
+    [SerializeField] private Slider uiVolumeSlider;
 
-    [SerializeField] private GameObject settingsPanel;
+    private void OnEnable()
+    {
+        UIManager.OnSaveSettings += SaveSettings;
+        UIManager.OnCancelSettings += LoadSettings;
+        UIManager.OnDefaultSettings += DefaultSettings;
+    }
+
+    private void OnDisable()
+    {
+        UIManager.OnSaveSettings -= SaveSettings;
+        UIManager.OnCancelSettings -= LoadSettings;
+        UIManager.OnDefaultSettings -= DefaultSettings;
+    }
 
     private void Start()
     {
@@ -19,17 +31,51 @@ public class SettingsManager : MonoBehaviour
 
     public void SetValuesToDefault()
     {
-        // Update slider values
-        gameSFXVolumeSlider.value = 0.8f;
-        uiSFXVolumeSlider.value = 0.8f;
         musicVolumeSlider.value = 0.5f;
+        gameVolumeSlider.value = 0.8f;
+        uiVolumeSlider.value = 0.8f;
 
-        // Invoke the onValueChanged events manually
-        gameSFXVolumeSlider.onValueChanged.Invoke(gameSFXVolumeSlider.value);
-        uiSFXVolumeSlider.onValueChanged.Invoke(uiSFXVolumeSlider.value);
+        PlayerPrefs.SetFloat("MusicVolume", musicVolumeSlider.value);
+        PlayerPrefs.SetFloat("GameVolume", gameVolumeSlider.value);
+        PlayerPrefs.SetFloat("UIVolume", uiVolumeSlider.value);
+
         musicVolumeSlider.onValueChanged.Invoke(musicVolumeSlider.value);
+        gameVolumeSlider.onValueChanged.Invoke(gameVolumeSlider.value);
+        uiVolumeSlider.onValueChanged.Invoke(uiVolumeSlider.value);
     }
 
+    private void DefaultSettings()
+    {
+        musicVolumeSlider.value = 0.5f;
+        gameVolumeSlider.value = 0.8f;
+        uiVolumeSlider.value = 0.8f;
+
+        musicVolumeSlider.onValueChanged.Invoke(musicVolumeSlider.value);
+        gameVolumeSlider.onValueChanged.Invoke(gameVolumeSlider.value);
+        uiVolumeSlider.onValueChanged.Invoke(uiVolumeSlider.value);
+    }
+
+    private void SaveSettings()
+    {
+        PlayerPrefs.SetFloat("MusicVolume", musicVolumeSlider.value);
+        PlayerPrefs.SetFloat("GameVolume", gameVolumeSlider.value);
+        PlayerPrefs.SetFloat("UIVolume", uiVolumeSlider.value);
+    }
+
+    private void LoadSettings()
+    {
+        float musicVolume = PlayerPrefs.GetFloat("MusicVolume");
+        float gameVolume = PlayerPrefs.GetFloat("GameVolume");
+        float uiVolume = PlayerPrefs.GetFloat("UIVolume");
+
+        musicVolumeSlider.value = musicVolume;
+        gameVolumeSlider.value = gameVolume;
+        uiVolumeSlider.value = uiVolume;
+
+        musicVolumeSlider.onValueChanged.Invoke(musicVolumeSlider.value);
+        gameVolumeSlider.onValueChanged.Invoke(gameVolumeSlider.value);
+        uiVolumeSlider.onValueChanged.Invoke(uiVolumeSlider.value);
+    }
 
     private float ConvertLinearToLog(float sliderValue)
     {
