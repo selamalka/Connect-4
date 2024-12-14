@@ -51,7 +51,10 @@ public class GameManager : MonoBehaviour
 
     private void StartGame(GameMode gameMode)
     {
-        raycastBlocker.SetActive(false);
+        if (GameMode != GameMode.ComputerVsComputer)
+        {
+            raycastBlocker.SetActive(false);
+        }
 
         if (IsGameActive)
         {
@@ -181,17 +184,20 @@ public class GameManager : MonoBehaviour
             return; // Prevent multiple triggers in the same turn
         }
 
-        AudioManager.Instance.PlayAudioWithRandomPitch(AudioType.Game, "Round Click", 0.6f, 1.2f);
-
         isTurnInProgress = true;
-        raycastBlocker.SetActive(true);
-
+        
         if (gridManager.IsColumnFull(column))
         {
             Debug.Log("Column is full");
+            AudioManager.Instance.PlayAudio(AudioType.Game, "Column Full");
             isTurnInProgress = false;
             raycastBlocker.SetActive(false);
             return;
+        }
+        else
+        {
+            raycastBlocker.SetActive(true);
+            AudioManager.Instance.PlayAudioWithRandomPitch(AudioType.Game, "Round Click", 0.6f, 1.2f);
         }
 
         // Determine the row where the disk will land
@@ -209,7 +215,7 @@ public class GameManager : MonoBehaviour
         spawnedDisk.transform.rotation = Quaternion.Euler(0, 0, randomValue);
         spawnedDisk.transform.DORotate(new Vector3(0, 0, 0), 0.3f);
 
-        spawnedDisk.transform.DOPunchScale(new Vector3(0.2f, 0.2f, 0.2f), 0.2f).SetEase(Ease.OutQuad);
+        spawnedDisk.transform.DOPunchScale(new Vector3(0.25f, 0.25f, 0.25f), 0.2f).SetEase(Ease.OutQuad);
 
         lastSpawnedDisk = spawnedDisk;
 
@@ -283,9 +289,9 @@ public class GameManager : MonoBehaviour
 
     private void HandleRaycastBlocker()
     {
-        BasePlayerController basePlayerContorller = GetPlayerControllerByColor(currentPlayer);
+        BasePlayerController currentPlayerController = GetPlayerControllerByColor(currentPlayer);
 
-        if (basePlayerContorller.GetComponent<AIPlayerController>() != null)
+        if (currentPlayerController.GetComponent<AIPlayerController>() != null)
         {
             raycastBlocker.SetActive(false);
         }
@@ -293,6 +299,11 @@ public class GameManager : MonoBehaviour
         if (GameMode == GameMode.PlayerVsPlayer)
         {
             raycastBlocker.SetActive(false);
+        }
+
+        if (GameMode == GameMode.ComputerVsComputer)
+        {
+            raycastBlocker.SetActive(true);
         }
     }
 
