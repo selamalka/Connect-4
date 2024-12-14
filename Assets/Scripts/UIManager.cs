@@ -39,6 +39,8 @@ public class UIManager : MonoBehaviour
         background.transform.localScale = Vector3.zero;
         header.transform.localScale = Vector3.zero;
         choosePlayerPanel.transform.localScale = Vector3.zero;
+        announcementPanel.transform.localScale = Vector3.zero;
+        announcementText.transform.localScale = Vector3.zero;
 
         buttonPanel.SetActive(false);
         board.SetActive(false);
@@ -74,6 +76,8 @@ public class UIManager : MonoBehaviour
         board.SetActive(false);
         announcementPanel.SetActive(true);
         announcementText.text = announcement;
+        announcementPanel.transform.DOScale(1, 0.3f).SetEase(Ease.OutBack)
+            .OnComplete(() => announcementText.transform.DOScale(1, 0.3f).SetEase(Ease.OutQuart));
     }
 
     private async Task AnimateMenuIn()
