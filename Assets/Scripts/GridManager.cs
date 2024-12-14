@@ -80,9 +80,6 @@ public class GridManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Get the Cell at a specific grid position.
-    /// </summary>
     public Cell GetCell(int row, int column)
     {
         if (row < 0 || row >= rows || column < 0 || column >= Columns)
