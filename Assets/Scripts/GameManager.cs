@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour
     {
         UIManager.OnSelectGameMode += SetGameMode;
         UIManager.OnConfirmPressed += StartGame;
-        UIManager.OnRestartPressed += RestartGame;
+        UIManager.OnRestart += RestartGame;
         connectGameGrid.ColumnClicked += HandleColumnClick;
     }
 
@@ -46,7 +46,7 @@ public class GameManager : MonoBehaviour
     {
         UIManager.OnSelectGameMode -= SetGameMode;
         UIManager.OnConfirmPressed -= StartGame;
-        UIManager.OnRestartPressed -= RestartGame;
+        UIManager.OnRestart -= RestartGame;
         connectGameGrid.ColumnClicked -= HandleColumnClick;
     }
 

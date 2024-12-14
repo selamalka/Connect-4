@@ -14,6 +14,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject header;
     [SerializeField] private GameObject background;
     [SerializeField] private GameObject buttonPanel;
+    [SerializeField] private GameObject settingsPanel;
+    [SerializeField] private GameObject settingsButton;
     [SerializeField] private GameObject announcementPanel;
     [SerializeField] private Text announcementText;
 
@@ -25,7 +27,10 @@ public class UIManager : MonoBehaviour
 
     public static event Action<GameMode> OnSelectGameMode;
     public static event Action<GameMode> OnConfirmPressed;
-    public static event Action OnRestartPressed;
+    public static event Action OnRestart;
+    public static event Action OnSaveSettings;
+    public static event Action OnCancelSettings;
+    public static event Action OnDefaultSettings;
     public static Action<string> OnAnnouncement;
 
     private int delayTimeAfterPress = 250;
@@ -41,6 +46,7 @@ public class UIManager : MonoBehaviour
         choosePlayerPanel.transform.localScale = Vector3.zero;
         announcementPanel.transform.localScale = Vector3.zero;
         announcementText.transform.localScale = Vector3.zero;
+        settingsPanel.transform.localScale = Vector3.zero;
 
         buttonPanel.SetActive(false);
         board.SetActive(false);
@@ -149,6 +155,41 @@ public class UIManager : MonoBehaviour
     }
 
     // Unity event
+    public void SettingsButton()
+    {
+        if (!settingsPanel.activeInHierarchy)
+        {
+            settingsPanel.SetActive(true);
+            settingsPanel.transform.DOScale(1, 0.3f).SetEase(Ease.OutBack);
+            OnCancelSettings?.Invoke();
+        }
+        else
+        {
+            settingsPanel.transform.DOScale(0, 0.2f).SetEase(Ease.OutSine).OnComplete(() => settingsPanel.SetActive(false));
+        }
+    }
+
+    // Unity event
+    public void DefaultSettingsButton()
+    {
+        OnDefaultSettings?.Invoke();
+    }
+
+    // Unity event
+    public void SaveSettingsButton()
+    {
+        OnSaveSettings?.Invoke();
+        settingsPanel.transform.DOScale(0, 0.3f).SetEase(Ease.OutSine).OnComplete(() => settingsPanel.SetActive(false));
+    }
+
+    // Unity event
+    public void CancelSettingsButton()
+    {
+        OnCancelSettings?.Invoke();
+        settingsPanel.transform.DOScale(0, 0.3f).SetEase(Ease.OutSine).OnComplete(() => settingsPanel.SetActive(false));
+    }
+
+    // Unity event
     public async void MenuButton()
     {
         gameManager.SetIsGamePaused(true);
@@ -197,7 +238,7 @@ public class UIManager : MonoBehaviour
         await Task.Delay(delayTimeAfterPress);
         announcementPanel.SetActive(false);
         board.SetActive(true);
-        OnRestartPressed?.Invoke();
+        OnRestart?.Invoke();
     }
 
     // Unity event
