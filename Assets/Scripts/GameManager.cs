@@ -11,8 +11,8 @@ public class GameManager : MonoBehaviour
     [field: SerializeField] public bool IsGameActive { get; private set; }
     [field: SerializeField] public bool IsGamePaused { get; private set; }
 
-    [Header("Players")]
-    [SerializeField] private PlayerColor currentPlayer;
+    [field: Header("Players")]
+    [field: SerializeField] public PlayerColor CurrentPlayer { get; private set; }
     [SerializeField] private PlayerColor openingPlayer;
     [SerializeField] private BasePlayerController[] playerControllers;
 
@@ -32,6 +32,7 @@ public class GameManager : MonoBehaviour
     private int lastRowFilled;
     private Disk lastSpawnedDisk;
 
+    public static Action<PlayerColor> OnCurrentPlayerChanged;
 
     private void OnEnable()
     {
@@ -73,7 +74,7 @@ public class GameManager : MonoBehaviour
 
         if (GameMode == GameMode.ComputerVsComputer)
         {
-            GetPlayerControllerByColor(currentPlayer).MakeMove();
+            GetPlayerControllerByColor(CurrentPlayer).MakeMove();
         }
     }
 
@@ -207,7 +208,7 @@ public class GameManager : MonoBehaviour
         lastColumnFilled = column;
 
         // Spawn the disk and get the actual instance
-        Disk spawnedDisk = (Disk)connectGameGrid.Spawn(GetDiskByPlayerColor(currentPlayer), column, 0);
+        Disk spawnedDisk = (Disk)connectGameGrid.Spawn(GetDiskByPlayerColor(CurrentPlayer), column, 0);
 
         int randomNumber = UnityEngine.Random.Range(0, 2);
         float randomValue = randomNumber == 0 ? 270f : 90f;
@@ -236,10 +237,10 @@ public class GameManager : MonoBehaviour
         AudioManager.Instance.PlayAudio(AudioType.Game, "Disk In Cell");
 
         // Check for a win after the disk has landed
-        if (gridManager.CheckWin(row, column, currentPlayer))
+        if (gridManager.CheckWin(row, column, CurrentPlayer))
         {
             // Find the index of the winning player by color
-            int winningPlayerIndex = GetPlayerControllerByColor(currentPlayer).PlayerIndex;
+            int winningPlayerIndex = GetPlayerControllerByColor(CurrentPlayer).PlayerIndex;
 
             RefreshGame();
 
@@ -274,7 +275,7 @@ public class GameManager : MonoBehaviour
         isTurnInProgress = false;
         playerControllers = null;
     }
-
+    
     private void EndTurn()
     {
         HandleRaycastBlocker();
@@ -284,12 +285,12 @@ public class GameManager : MonoBehaviour
         lastSpawnedDisk.transform.DOPunchScale(new Vector3(-0.2f, -0.2f, -0.2f), 0.2f).SetEase(Ease.OutQuad);
 
         // Call MakeMove for the next player (either human or AI)
-        GetPlayerControllerByColor(currentPlayer).MakeMove();
+        GetPlayerControllerByColor(CurrentPlayer).MakeMove();
     }
 
     private void HandleRaycastBlocker()
     {
-        BasePlayerController currentPlayerController = GetPlayerControllerByColor(currentPlayer);
+        BasePlayerController currentPlayerController = GetPlayerControllerByColor(CurrentPlayer);
 
         if (currentPlayerController.GetComponent<AIPlayerController>() != null)
         {
@@ -312,28 +313,33 @@ public class GameManager : MonoBehaviour
         isTurnInProgress = false;
         gridManager.ClearGrid();
         SetPlayers(GameMode);
-        IsGameActive = true;
-        raycastBlocker.SetActive(false);
+        IsGameActive = true;        
 
         if (GameMode == GameMode.ComputerVsComputer)
         {
-            GetPlayerControllerByColor(currentPlayer).MakeMove();
+            raycastBlocker.SetActive(true);
+            GetPlayerControllerByColor(CurrentPlayer).MakeMove();
+        }
+        else
+        {
+            raycastBlocker.SetActive(false);
         }
     }
 
     private void SwitchCurrentPlayer()
     {
         // Find the index of the current player in the array
-        int currentIndex = Array.FindIndex(playerControllers, player => player.PlayerColor == currentPlayer);
+        int currentIndex = Array.FindIndex(playerControllers, player => player.PlayerColor == CurrentPlayer);
 
         // Calculate the next index (wrap around using modulo)
         int nextIndex = (currentIndex + 1) % playerControllers.Length;
 
         // Update the current player to the next one
-        currentPlayer = playerControllers[nextIndex].PlayerColor;
+        CurrentPlayer = playerControllers[nextIndex].PlayerColor;
+        OnCurrentPlayerChanged?.Invoke(CurrentPlayer);
     }
 
-    private BasePlayerController GetPlayerControllerByColor(PlayerColor playerColor)
+    public BasePlayerController GetPlayerControllerByColor(PlayerColor playerColor)
     {
         return playerControllers.FirstOrDefault(e => e.PlayerColor == playerColor);
     }
@@ -358,7 +364,8 @@ public class GameManager : MonoBehaviour
     private void SetOpeningPlayer(PlayerColor playerColor)
     {
         BasePlayerController firstPlayer = GetPlayerControllerByColor(playerColor);
-        currentPlayer = firstPlayer.PlayerColor;
+        CurrentPlayer = firstPlayer.PlayerColor;
+        OnCurrentPlayerChanged?.Invoke(CurrentPlayer);
     }
 
     public void SetIsGamePaused(bool value)
@@ -367,7 +374,7 @@ public class GameManager : MonoBehaviour
 
         if (GameMode == GameMode.ComputerVsComputer && value == true)
         {
-            GetPlayerControllerByColor(currentPlayer).MakeMove();
+            GetPlayerControllerByColor(CurrentPlayer).MakeMove();
         }
     }
 }

@@ -636,8 +636,9 @@ GameObject:
   - component: {fileID: 160351811}
   - component: {fileID: 160351813}
   - component: {fileID: 160351814}
+  - component: {fileID: 160351815}
   m_Layer: 5
-  m_Name: Image (1)
+  m_Name: Red Disk Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -656,7 +657,7 @@ RectTransform:
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1397812712}
-  m_RootOrder: 1
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -26.018}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -742,6 +743,19 @@ MonoBehaviour:
   durationRange: {x: 0.5, y: 1.5}
   randomizeDuration: 1
   randomizeDirection: 1
+--- !u!114 &160351815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 160351809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e960b2aac2d03a418eea4514bc713f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerColor: 1
 --- !u!1 &206031880
 GameObject:
   m_ObjectHideFlags: 0
@@ -1766,8 +1780,9 @@ GameObject:
   - component: {fileID: 844545167}
   - component: {fileID: 844545169}
   - component: {fileID: 844545170}
+  - component: {fileID: 844545171}
   m_Layer: 5
-  m_Name: Image (5)
+  m_Name: Blue Disk Image (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1786,7 +1801,7 @@ RectTransform:
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1397812712}
-  m_RootOrder: 5
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -15.814}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1872,6 +1887,19 @@ MonoBehaviour:
   durationRange: {x: 0.5, y: 1.5}
   randomizeDuration: 1
   randomizeDirection: 1
+--- !u!114 &844545171
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 844545165}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e960b2aac2d03a418eea4514bc713f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerColor: 0
 --- !u!1 &877933725
 GameObject:
   m_ObjectHideFlags: 0
@@ -1885,8 +1913,9 @@ GameObject:
   - component: {fileID: 877933727}
   - component: {fileID: 877933729}
   - component: {fileID: 877933730}
+  - component: {fileID: 877933731}
   m_Layer: 5
-  m_Name: Image (7)
+  m_Name: Blue Disk Image (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1905,7 +1934,7 @@ RectTransform:
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1397812712}
-  m_RootOrder: 7
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 16.662}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1991,6 +2020,19 @@ MonoBehaviour:
   durationRange: {x: 0.5, y: 1.5}
   randomizeDuration: 1
   randomizeDirection: 1
+--- !u!114 &877933731
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 877933725}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e960b2aac2d03a418eea4514bc713f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerColor: 0
 --- !u!1 &880144220
 GameObject:
   m_ObjectHideFlags: 0
@@ -2220,8 +2262,9 @@ GameObject:
   - component: {fileID: 959492118}
   - component: {fileID: 959492120}
   - component: {fileID: 959492121}
+  - component: {fileID: 959492122}
   m_Layer: 5
-  m_Name: Image (6)
+  m_Name: Blue Disk Image (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2240,7 +2283,7 @@ RectTransform:
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1397812712}
-  m_RootOrder: 6
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -117.579}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2326,6 +2369,19 @@ MonoBehaviour:
   durationRange: {x: 0.5, y: 1.5}
   randomizeDuration: 1
   randomizeDirection: 1
+--- !u!114 &959492122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 959492116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e960b2aac2d03a418eea4514bc713f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerColor: 0
 --- !u!114 &999208765
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2479,8 +2535,9 @@ GameObject:
   - component: {fileID: 1062655589}
   - component: {fileID: 1062655591}
   - component: {fileID: 1062655592}
+  - component: {fileID: 1062655593}
   m_Layer: 5
-  m_Name: Image
+  m_Name: Blue Disk Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2585,6 +2642,19 @@ MonoBehaviour:
   durationRange: {x: 0.5, y: 1.5}
   randomizeDuration: 1
   randomizeDirection: 1
+--- !u!114 &1062655593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1062655587}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e960b2aac2d03a418eea4514bc713f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerColor: 0
 --- !u!114 &1093071871 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1704371023184313727, guid: e7e7db9a0dde44766815aba93de248cd, type: 3}
@@ -2671,8 +2741,9 @@ GameObject:
   - component: {fileID: 1148840389}
   - component: {fileID: 1148840391}
   - component: {fileID: 1148840392}
+  - component: {fileID: 1148840393}
   m_Layer: 5
-  m_Name: Image (4)
+  m_Name: Red Disk Image (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2691,7 +2762,7 @@ RectTransform:
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1397812712}
-  m_RootOrder: 4
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -140.001}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2777,6 +2848,19 @@ MonoBehaviour:
   durationRange: {x: 0.5, y: 1.5}
   randomizeDuration: 1
   randomizeDirection: 1
+--- !u!114 &1148840393
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1148840387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e960b2aac2d03a418eea4514bc713f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerColor: 1
 --- !u!1 &1178202447
 GameObject:
   m_ObjectHideFlags: 0
@@ -2813,7 +2897,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -6.637085}
   m_SizeDelta: {x: -1592.9, y: -0.0002}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1269450452
@@ -2829,8 +2913,9 @@ GameObject:
   - component: {fileID: 1269450454}
   - component: {fileID: 1269450456}
   - component: {fileID: 1269450457}
+  - component: {fileID: 1269450458}
   m_Layer: 5
-  m_Name: Image (2)
+  m_Name: Red Disk Image (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2849,7 +2934,7 @@ RectTransform:
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1397812712}
-  m_RootOrder: 2
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -50.617}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2935,6 +3020,19 @@ MonoBehaviour:
   durationRange: {x: 0.5, y: 1.5}
   randomizeDuration: 1
   randomizeDirection: 1
+--- !u!114 &1269450458
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1269450452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e960b2aac2d03a418eea4514bc713f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerColor: 1
 --- !u!1 &1284302229
 GameObject:
   m_ObjectHideFlags: 0
@@ -2979,8 +3077,9 @@ GameObject:
   - component: {fileID: 1369234703}
   - component: {fileID: 1369234705}
   - component: {fileID: 1369234706}
+  - component: {fileID: 1369234707}
   m_Layer: 5
-  m_Name: Image (3)
+  m_Name: Red Disk Image (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2999,7 +3098,7 @@ RectTransform:
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1397812712}
-  m_RootOrder: 3
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -6.154}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -3085,6 +3184,19 @@ MonoBehaviour:
   durationRange: {x: 0.5, y: 1.5}
   randomizeDuration: 1
   randomizeDirection: 1
+--- !u!114 &1369234707
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1369234701}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e960b2aac2d03a418eea4514bc713f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerColor: 1
 --- !u!114 &1373248791
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3128,13 +3240,13 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1062655588}
+  - {fileID: 844545166}
+  - {fileID: 959492117}
+  - {fileID: 877933726}
   - {fileID: 160351810}
   - {fileID: 1269450453}
   - {fileID: 1369234702}
   - {fileID: 1148840388}
-  - {fileID: 844545166}
-  - {fileID: 959492117}
-  - {fileID: 877933726}
   m_Father: {fileID: 241855668}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
