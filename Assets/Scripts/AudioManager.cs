@@ -86,7 +86,7 @@ public class AudioManager : MonoBehaviour
         musicSource.Stop();
     }
 
-    public void SetVolume(AudioType audioType, float volume)
+/*    public void SetVolume(AudioType audioType, float volume)
     {
         string mixerParameter = GetMixerParameter(audioType);
         if (!string.IsNullOrEmpty(mixerParameter))
@@ -95,7 +95,7 @@ public class AudioManager : MonoBehaviour
             float decibels = Mathf.Lerp(-80f, 0f, Mathf.Clamp01(volume));
             audioMixer.SetFloat(mixerParameter, decibels);
         }
-    }
+    }*/
 
     private AudioSource GetAudioSource(AudioType audioType)
     {

@@ -58,7 +58,6 @@ public class GridManager : MonoBehaviour
             }
         }
     }
-
     public void ClearGrid()
     {
         var allDisks = FindObjectsOfType<Disk>();
@@ -80,27 +79,40 @@ public class GridManager : MonoBehaviour
         }
     }
 
-    public Cell GetCell(int row, int column)
+    private int CountInDirection(int startRow, int startCol, int rowDir, int colDir, PlayerColor player)
     {
-        if (row < 0 || row >= rows || column < 0 || column >= Columns)
-            return null;
+        int count = 0;
 
-        return gridCells[row, column];
+        int row = startRow + rowDir;
+        int col = startCol + colDir;
+
+        while (IsInBounds(row, col) && GetCell(row, col)?.PlayerInCell == player)
+        {
+            count++;
+            row += rowDir;
+            col += colDir;
+        }
+
+        return count;
     }
 
-    public bool IsColumnFull(int column)
+    public bool CheckDraw()
     {
-        for (int i = 0; i < rows; i++)
+        for (int row = 0; row < rows; row++)
         {
-            if (GetCell(i, column).PlayerInCell == PlayerColor.None)
+            for (int col = 0; col < Columns; col++)
             {
-                return false;
+                if (GetCell(row, col).PlayerInCell == PlayerColor.None)
+                {
+                    // Found an empty cell, so it's not a draw
+                    return false;
+                }
             }
         }
 
+        // No empty cells found, it's a draw
         return true;
     }
-
     public bool CheckWin(int row, int column, PlayerColor player)
     {
         // Directions to check: [row offset, column offset]
@@ -136,24 +148,18 @@ public class GridManager : MonoBehaviour
 
         return false; // No win detected
     }
-
-    private int CountInDirection(int startRow, int startCol, int rowDir, int colDir, PlayerColor player)
+    public bool IsColumnFull(int column)
     {
-        int count = 0;
-
-        int row = startRow + rowDir;
-        int col = startCol + colDir;
-
-        while (IsInBounds(row, col) && GetCell(row, col)?.PlayerInCell == player)
+        for (int i = 0; i < rows; i++)
         {
-            count++;
-            row += rowDir;
-            col += colDir;
+            if (GetCell(i, column).PlayerInCell == PlayerColor.None)
+            {
+                return false;
+            }
         }
 
-        return count;
+        return true;
     }
-
     private bool IsInBounds(int row, int col)
     {
         return row >= 0 && row < rows && col >= 0 && col < Columns;
@@ -172,22 +178,11 @@ public class GridManager : MonoBehaviour
         Debug.LogError($"Column {column} is full but was not detected earlier!");
         return -1; // Column is full (should not happen if IsColumnFull was checked)
     }
-
-    public bool CheckDraw()
+    public Cell GetCell(int row, int column)
     {
-        for (int row = 0; row < rows; row++)
-        {
-            for (int col = 0; col < Columns; col++)
-            {
-                if (GetCell(row, col).PlayerInCell == PlayerColor.None)
-                {
-                    // Found an empty cell, so it's not a draw
-                    return false;
-                }
-            }
-        }
+        if (row < 0 || row >= rows || column < 0 || column >= Columns)
+            return null;
 
-        // No empty cells found, it's a draw
-        return true;
+        return gridCells[row, column];
     }
 }

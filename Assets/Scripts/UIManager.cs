@@ -47,29 +47,6 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    private void InitializeGameManager()
-    {
-        GameManager = FindObjectOfType<GameManager>();
-    }
-
-    private void ResetTransformScales()
-    {
-        if (background != null) background.transform.localScale = Vector3.zero;
-        if (header != null) header.transform.localScale = Vector3.zero;
-        if (choosePlayerPanel != null) choosePlayerPanel.transform.localScale = Vector3.zero;
-        if (announcementPanel != null) announcementPanel.transform.localScale = Vector3.zero;
-        if (announcementText != null) announcementText.transform.localScale = Vector3.zero;
-        if (settingsPanel != null) settingsPanel.transform.localScale = Vector3.zero;
-    }
-
-    private void DeactivateGameObjects()
-    {
-        if (buttonPanel != null) buttonPanel.SetActive(false);
-        if (board != null) board.SetActive(false);
-        if (header != null) header.SetActive(false);
-        if (choosePlayerPanel != null) choosePlayerPanel.SetActive(false);
-    }
-
     private void OnEnable()
     {
         OnAnnouncement += OnAnnouncementAction;
@@ -90,21 +67,61 @@ public class UIManager : MonoBehaviour
         if (GameManager != null)
         {
             announcementPanel.SetActive(false);
-
             HandleModeButtonColor();
-
             await AnimateMenuIn();
-
             buttonPanel.SetActive(true);
             board.SetActive(true); 
         }
     }
 
+    private void InitializeGameManager()
+    {
+        GameManager = FindObjectOfType<GameManager>();
+    }
+    private void ResetTransformScales()
+    {
+        if (background != null) background.transform.localScale = Vector3.zero;
+        if (header != null) header.transform.localScale = Vector3.zero;
+        if (choosePlayerPanel != null) choosePlayerPanel.transform.localScale = Vector3.zero;
+        if (announcementPanel != null) announcementPanel.transform.localScale = Vector3.zero;
+        if (announcementText != null) announcementText.transform.localScale = Vector3.zero;
+        if (settingsPanel != null) settingsPanel.transform.localScale = Vector3.zero;
+    }
+    private void DeactivateGameObjects()
+    {
+        if (buttonPanel != null) buttonPanel.SetActive(false);
+        if (board != null) board.SetActive(false);
+        if (header != null) header.SetActive(false);
+        if (choosePlayerPanel != null) choosePlayerPanel.SetActive(false);
+    }
+    private void HandleModeButtonColor()
+    {
+        // Reset all buttons to white first
+        ResetAllButtonsColors();
+
+        // Highlight the selected mode's button
+        switch (GameManager.GameMode)
+        {
+            case GameMode.PlayerVsPlayer:
+                playerVsPlayerButton.color = chosenModeColor;
+                break;
+
+            case GameMode.PlayerVsComputer:
+                playerVsComputerButton.color = chosenModeColor;
+                break;
+
+            case GameMode.ComputerVsComputer:
+                computerVsComputerButton.color = chosenModeColor;
+                break;
+
+            default:
+                break;
+        }
+    }
     public void SelectGameMode(GameMode mode)
     {
         OnSelectGameMode?.Invoke(mode);
     }
-
     private void OnAnnouncementAction(string announcement)
     {
         board.SetActive(false);
@@ -131,7 +148,6 @@ public class UIManager : MonoBehaviour
         choosePlayerPanel.SetActive(true);
         choosePlayerPanel.transform.DOScale(1f, 0.3f).SetEase(Ease.OutBack);
     }
-
     private async Task AnimateMenuOut()
     {
         AudioManager.Instance.PlayAudio(AudioType.UI, "Menu Out 1");
@@ -149,31 +165,6 @@ public class UIManager : MonoBehaviour
         await Task.Delay(300);
     }
 
-    private void HandleModeButtonColor()
-    {
-        // Reset all buttons to white first
-        ResetAllButtonsColors();
-
-        // Highlight the selected mode's button
-        switch (GameManager.GameMode)
-        {
-            case GameMode.PlayerVsPlayer:
-                playerVsPlayerButton.color = chosenModeColor;
-                break;
-
-            case GameMode.PlayerVsComputer:
-                playerVsComputerButton.color = chosenModeColor;
-                break;
-
-            case GameMode.ComputerVsComputer:
-                computerVsComputerButton.color = chosenModeColor;
-                break;
-
-            default:
-                break;
-        }
-    }
-
     // Helper function to reset all button colors
     private void ResetAllButtonsColors()
     {
@@ -187,6 +178,7 @@ public class UIManager : MonoBehaviour
     {
         if (!settingsPanel.activeInHierarchy)
         {
+            AudioManager.Instance.PlayAudio(AudioType.UI, "Menu In 1");
             settingsPanel.SetActive(true);
             settingsPanel.transform.DOScale(1, 0.3f).SetEase(Ease.OutBack);
             OnCancelSettings?.Invoke();
@@ -194,6 +186,7 @@ public class UIManager : MonoBehaviour
         else
         {
             settingsPanel.transform.DOScale(0, 0.2f).SetEase(Ease.OutSine).OnComplete(() => settingsPanel.SetActive(false));
+            AudioManager.Instance.PlayAudio(AudioType.UI, "Menu Out 1");
         }
     }
 
@@ -207,14 +200,16 @@ public class UIManager : MonoBehaviour
     public void SaveSettingsButton()
     {
         OnSaveSettings?.Invoke();
-        settingsPanel.transform.DOScale(0, 0.3f).SetEase(Ease.OutSine).OnComplete(() => settingsPanel.SetActive(false));
+        settingsPanel.transform.DOScale(0, 0.2f).SetEase(Ease.OutSine).OnComplete(() => settingsPanel.SetActive(false));
+        AudioManager.Instance.PlayAudio(AudioType.UI, "Menu Out 1");
     }
 
     // Unity event
     public void CancelSettingsButton()
     {
         OnCancelSettings?.Invoke();
-        settingsPanel.transform.DOScale(0, 0.3f).SetEase(Ease.OutSine).OnComplete(() => settingsPanel.SetActive(false));
+        settingsPanel.transform.DOScale(0, 0.2f).SetEase(Ease.OutSine).OnComplete(() => settingsPanel.SetActive(false));
+        AudioManager.Instance.PlayAudio(AudioType.UI, "Menu Out 1");
     }
 
     // Unity event
