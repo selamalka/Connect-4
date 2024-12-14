@@ -2,6 +2,7 @@ using DG.Tweening;
 using MoonActive.Connect4;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -34,6 +35,8 @@ public class GameManager : MonoBehaviour
 
     public static Action<PlayerColor> OnCurrentPlayerChanged;
 
+    private SettingsManager settingsManager;
+
     private void OnEnable()
     {
         UIManager.OnSelectGameMode += SetGameMode;
@@ -42,7 +45,7 @@ public class GameManager : MonoBehaviour
 
         if (connectGameGrid != null)
         {
-            connectGameGrid.ColumnClicked += HandleColumnClick; 
+            connectGameGrid.ColumnClicked += HandleColumnClick;
         }
     }
 
@@ -54,7 +57,15 @@ public class GameManager : MonoBehaviour
 
         if (connectGameGrid != null)
         {
-            connectGameGrid.ColumnClicked -= HandleColumnClick; 
+            connectGameGrid.ColumnClicked -= HandleColumnClick;
+        }
+    }
+
+    private void Start()
+    {
+        if (FindObjectOfType<SettingsManager>() != null)
+        {
+            settingsManager = FindObjectOfType<SettingsManager>();
         }
     }
 
@@ -85,105 +96,57 @@ public class GameManager : MonoBehaviour
             GetPlayerControllerByColor(CurrentPlayer).MakeMove();
         }
     }
-
-    private void SetPlayers(GameMode gameMode)
+    private void SwitchCurrentPlayer()
     {
-        // Destroy any existing players
-        DestroyAllPlayers();
+        // Find the index of the current player in the array
+        int currentIndex = Array.FindIndex(playerControllers, player => player.PlayerColor == CurrentPlayer);
 
-        // Instantiate player objects based on game mode
-        GameObject player1Object = InstantiatePlayer1Object(gameMode);
-        GameObject player2Object = InstantiatePlayer2Object(gameMode);
+        // Calculate the next index (wrap around using modulo)
+        int nextIndex = (currentIndex + 1) % playerControllers.Length;
 
-        // Fetch the appropriate components
-        BasePlayerController player1 = GetPlayer1Controller(player1Object, gameMode);
-        BasePlayerController player2 = GetPlayer2Controller(player2Object, gameMode);
-
-        // Set GameManager for AI players
-        InitializeAIPlayer(player1);
-        InitializeAIPlayer(player2);
-
-        // Set player indexes
-        player1.SetPlayerIndex(1);
-        player2.SetPlayerIndex(2);
-
-        // Set player colors
-        player1.SetPlayerColor(PlayerColor.Blue);
-        player2.SetPlayerColor(PlayerColor.Red);
-
-        // Assign to the playerControllers array
-        playerControllers = new BasePlayerController[2] { player1, player2 };
+        // Update the current player to the next one
+        CurrentPlayer = playerControllers[nextIndex].PlayerColor;
+        OnCurrentPlayerChanged?.Invoke(CurrentPlayer);
     }
-
-    private GameObject InstantiatePlayer1Object(GameMode gameMode)
+    private void RefreshGame()
     {
-        switch (gameMode)
+        gridManager.ClearGrid();
+        IsGameActive = false;
+        isTurnInProgress = false;
+        playerControllers = null;
+    }
+    private void RestartGame()
+    {
+        isTurnInProgress = false;
+        gridManager.ClearGrid();
+        SetPlayers(GameMode);
+        IsGameActive = true;
+
+        if (GameMode == GameMode.ComputerVsComputer)
         {
-            case GameMode.PlayerVsPlayer:
-            case GameMode.PlayerVsComputer:
-                return Instantiate(humanPlayerControllerPrefab);
-
-            case GameMode.ComputerVsComputer:
-                return Instantiate(aiPlayerControllerPrefab);
-
-            default:
-                return null;
+            raycastBlocker.SetActive(true);
+            GetPlayerControllerByColor(CurrentPlayer).MakeMove();
+        }
+        else
+        {
+            raycastBlocker.SetActive(false);
         }
     }
-
-    private GameObject InstantiatePlayer2Object(GameMode gameMode)
+    private void EndTurn()
     {
-        switch (gameMode)
-        {
-            case GameMode.PlayerVsPlayer:
-                return Instantiate(humanPlayerControllerPrefab);
+        HandleRaycastBlocker();
+        SwitchCurrentPlayer();
+        isTurnInProgress = false; // Allow the next turn to proceed
+        lastSpawnedDisk.StoppedFalling -= OnStoppedFallingWrapper;
+        lastSpawnedDisk.transform.DOPunchScale(new Vector3(-0.2f, -0.2f, -0.2f), 0.2f).SetEase(Ease.OutQuad);
 
-            case GameMode.PlayerVsComputer:
-            case GameMode.ComputerVsComputer:
-                return Instantiate(aiPlayerControllerPrefab);
-
-            default:
-                return null;
-        }
+        // Call MakeMove for the next player (either human or AI)
+        GetPlayerControllerByColor(CurrentPlayer).MakeMove();
     }
-
-    private BasePlayerController GetPlayer1Controller(GameObject playerObject, GameMode gameMode)
-    {
-        return gameMode == GameMode.ComputerVsComputer
-            ? playerObject.GetComponent<AIPlayerController>()
-            : playerObject.GetComponent<HumanPlayerController>();
-    }
-
-    private BasePlayerController GetPlayer2Controller(GameObject playerObject, GameMode gameMode)
-    {
-        return gameMode == GameMode.PlayerVsPlayer
-            ? playerObject.GetComponent<HumanPlayerController>()
-            : playerObject.GetComponent<AIPlayerController>();
-    }
-
-    private void InitializeAIPlayer(BasePlayerController player)
-    {
-        if (player is AIPlayerController aiPlayer)
-        {
-            aiPlayer.SetGameManager(this);
-        }
-    }
-
     public void DestroyAllPlayers()
     {
         var allPlayer = FindObjectsOfType<BasePlayerController>();
         foreach (var player in allPlayer) { Destroy(player.gameObject); }
-    }
-
-    private void SetGameMode(GameMode gameMode)
-    {
-        GameMode = gameMode;
-    }
-
-    public void OnAIMoveChosen(int column)
-    {
-        // Directly call HandleColumnClick to process the AI's move
-        HandleColumnClick(column);
     }
 
     private void HandleColumnClick(int column)
@@ -194,7 +157,7 @@ public class GameManager : MonoBehaviour
         }
 
         isTurnInProgress = true;
-        
+
         if (gridManager.IsColumnFull(column))
         {
             Debug.Log("Column is full");
@@ -234,13 +197,36 @@ public class GameManager : MonoBehaviour
             lastSpawnedDisk.StoppedFalling += OnStoppedFallingWrapper;
         }
     }
+    private void HandleRaycastBlocker()
+    {
+        BasePlayerController currentPlayerController = GetPlayerControllerByColor(CurrentPlayer);
 
+        if (currentPlayerController.GetComponent<AIPlayerController>() != null)
+        {
+            raycastBlocker.SetActive(false);
+        }
+
+        if (GameMode == GameMode.PlayerVsPlayer)
+        {
+            raycastBlocker.SetActive(false);
+        }
+
+        if (GameMode == GameMode.ComputerVsComputer)
+        {
+            raycastBlocker.SetActive(true);
+        }
+    }
+
+    public void OnAIMoveChosen(int column)
+    {
+        // Directly call HandleColumnClick to process the AI's move
+        HandleColumnClick(column);
+    }
     private void OnStoppedFallingWrapper()
     {
         OnStoppedFalling(lastRowFilled, lastColumnFilled);
     }
-
-    private void OnStoppedFalling(int row, int column)
+    private async void OnStoppedFalling(int row, int column)
     {
         AudioManager.Instance.PlayAudio(AudioType.Game, "Disk In Cell");
 
@@ -252,8 +238,14 @@ public class GameManager : MonoBehaviour
 
             RefreshGame();
 
+            float currentMusicVolume = PlayerPrefs.GetFloat("MusicVolume");
+
+            settingsManager.SetMusicVolumeBySettings(currentMusicVolume * 0.65f);
             AudioManager.Instance.PlayAudio(AudioType.Game, "Victory");
             UIManager.OnAnnouncement?.Invoke($"Player {winningPlayerIndex} Wins!");
+
+            await Task.Delay(2500);
+            settingsManager.SetMusicVolumeBySettings(currentMusicVolume);
 
             // Handle win logic (e.g., display a message, end the game)
             return;
@@ -276,80 +268,42 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void RefreshGame()
+    private GameObject InstantiatePlayer1Object(GameMode gameMode)
     {
-        gridManager.ClearGrid();
-        IsGameActive = false;
-        isTurnInProgress = false;
-        playerControllers = null;
-    }
-    
-    private void EndTurn()
-    {
-        HandleRaycastBlocker();
-        SwitchCurrentPlayer();
-        isTurnInProgress = false; // Allow the next turn to proceed
-        lastSpawnedDisk.StoppedFalling -= OnStoppedFallingWrapper;
-        lastSpawnedDisk.transform.DOPunchScale(new Vector3(-0.2f, -0.2f, -0.2f), 0.2f).SetEase(Ease.OutQuad);
-
-        // Call MakeMove for the next player (either human or AI)
-        GetPlayerControllerByColor(CurrentPlayer).MakeMove();
-    }
-
-    private void HandleRaycastBlocker()
-    {
-        BasePlayerController currentPlayerController = GetPlayerControllerByColor(CurrentPlayer);
-
-        if (currentPlayerController.GetComponent<AIPlayerController>() != null)
+        switch (gameMode)
         {
-            raycastBlocker.SetActive(false);
-        }
+            case GameMode.PlayerVsPlayer:
+            case GameMode.PlayerVsComputer:
+                return Instantiate(humanPlayerControllerPrefab);
 
-        if (GameMode == GameMode.PlayerVsPlayer)
-        {
-            raycastBlocker.SetActive(false);
-        }
+            case GameMode.ComputerVsComputer:
+                return Instantiate(aiPlayerControllerPrefab);
 
-        if (GameMode == GameMode.ComputerVsComputer)
-        {
-            raycastBlocker.SetActive(true);
+            default:
+                return null;
         }
     }
-
-    private void RestartGame()
+    private GameObject InstantiatePlayer2Object(GameMode gameMode)
     {
-        isTurnInProgress = false;
-        gridManager.ClearGrid();
-        SetPlayers(GameMode);
-        IsGameActive = true;        
+        switch (gameMode)
+        {
+            case GameMode.PlayerVsPlayer:
+                return Instantiate(humanPlayerControllerPrefab);
 
-        if (GameMode == GameMode.ComputerVsComputer)
-        {
-            raycastBlocker.SetActive(true);
-            GetPlayerControllerByColor(CurrentPlayer).MakeMove();
-        }
-        else
-        {
-            raycastBlocker.SetActive(false);
+            case GameMode.PlayerVsComputer:
+            case GameMode.ComputerVsComputer:
+                return Instantiate(aiPlayerControllerPrefab);
+
+            default:
+                return null;
         }
     }
-
-    private void SwitchCurrentPlayer()
+    private void InitializeAIPlayer(BasePlayerController player)
     {
-        // Find the index of the current player in the array
-        int currentIndex = Array.FindIndex(playerControllers, player => player.PlayerColor == CurrentPlayer);
-
-        // Calculate the next index (wrap around using modulo)
-        int nextIndex = (currentIndex + 1) % playerControllers.Length;
-
-        // Update the current player to the next one
-        CurrentPlayer = playerControllers[nextIndex].PlayerColor;
-        OnCurrentPlayerChanged?.Invoke(CurrentPlayer);
-    }
-
-    public BasePlayerController GetPlayerControllerByColor(PlayerColor playerColor)
-    {
-        return playerControllers.FirstOrDefault(e => e.PlayerColor == playerColor);
+        if (player is AIPlayerController aiPlayer)
+        {
+            aiPlayer.SetGameManager(this);
+        }
     }
 
     public Disk GetDiskByPlayerColor(PlayerColor playerColor)
@@ -368,14 +322,61 @@ public class GameManager : MonoBehaviour
 
         return null;
     }
+    private BasePlayerController GetPlayer2Controller(GameObject playerObject, GameMode gameMode)
+    {
+        return gameMode == GameMode.PlayerVsPlayer
+            ? playerObject.GetComponent<HumanPlayerController>()
+            : playerObject.GetComponent<AIPlayerController>();
+    }
+    private BasePlayerController GetPlayer1Controller(GameObject playerObject, GameMode gameMode)
+    {
+        return gameMode == GameMode.ComputerVsComputer
+            ? playerObject.GetComponent<AIPlayerController>()
+            : playerObject.GetComponent<HumanPlayerController>();
+    }
+    public BasePlayerController GetPlayerControllerByColor(PlayerColor playerColor)
+    {
+        return playerControllers.FirstOrDefault(e => e.PlayerColor == playerColor);
+    }
 
+    private void SetPlayers(GameMode gameMode)
+    {
+        // Destroy any existing players
+        DestroyAllPlayers();
+
+        // Instantiate player objects based on game mode
+        GameObject player1Object = InstantiatePlayer1Object(gameMode);
+        GameObject player2Object = InstantiatePlayer2Object(gameMode);
+
+        // Fetch the appropriate components
+        BasePlayerController player1 = GetPlayer1Controller(player1Object, gameMode);
+        BasePlayerController player2 = GetPlayer2Controller(player2Object, gameMode);
+
+        // Set GameManager for AI players
+        InitializeAIPlayer(player1);
+        InitializeAIPlayer(player2);
+
+        // Set player indexes
+        player1.SetPlayerIndex(1);
+        player2.SetPlayerIndex(2);
+
+        // Set player colors
+        player1.SetPlayerColor(PlayerColor.Blue);
+        player2.SetPlayerColor(PlayerColor.Red);
+
+        // Assign to the playerControllers array
+        playerControllers = new BasePlayerController[2] { player1, player2 };
+    }
+    private void SetGameMode(GameMode gameMode)
+    {
+        GameMode = gameMode;
+    }
     private void SetOpeningPlayer(PlayerColor playerColor)
     {
         BasePlayerController firstPlayer = GetPlayerControllerByColor(playerColor);
         CurrentPlayer = firstPlayer.PlayerColor;
         OnCurrentPlayerChanged?.Invoke(CurrentPlayer);
     }
-
     public void SetIsGamePaused(bool value)
     {
         IsGamePaused = value;
