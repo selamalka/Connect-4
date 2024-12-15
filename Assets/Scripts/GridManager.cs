@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class GridManager : MonoBehaviour
 {
+    /// <summary>
+    /// Responsible for creating and mapping the grid cells and the grid itself.    
+    /// </summary>
     [SerializeField] private ConnectGameGrid connectGameGrid; // Reference to ConnectGameGrid
     [SerializeField] private int rows = 6;
     [field: SerializeField] public int Columns { get; private set; } = 7;
@@ -98,6 +101,7 @@ public class GridManager : MonoBehaviour
 
     public bool CheckDraw()
     {
+        // Go through all the cells and check if they're all empty
         for (int row = 0; row < rows; row++)
         {
             for (int col = 0; col < Columns; col++)
