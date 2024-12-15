@@ -7,11 +7,11 @@ using UnityEngine.UI;
 /// </summary>
 public class SettingsManager : MonoBehaviour
 {
-    [SerializeField] private AudioMixer mainMixer;
-
     [SerializeField] private Slider musicVolumeSlider;
     [SerializeField] private Slider gameVolumeSlider;
     [SerializeField] private Slider uiVolumeSlider;
+
+    private AudioMixer mainMixer;
 
     private void OnEnable()
     {
@@ -25,6 +25,11 @@ public class SettingsManager : MonoBehaviour
         UIManager.OnSaveSettings -= SaveSettings;
         UIManager.OnCancelSettings -= LoadSettings;
         UIManager.OnDefaultSettings -= DefaultSettings;
+    }
+
+    private void Start()
+    {
+        mainMixer = AudioManager.Instance.AudioMixer;
     }
 
     private void SaveSettings()

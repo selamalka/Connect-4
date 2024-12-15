@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// Abstract base class for player controllers
+/// </summary>
 public abstract class BasePlayerController : MonoBehaviour
 {
     [field: SerializeField] public int PlayerIndex { get; private set; }

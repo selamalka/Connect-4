@@ -69,11 +69,11 @@ public class UIManager : MonoBehaviour
 
         if (GameManager != null)
         {
-            announcementPanel.SetActive(false);
-            HandleModeButtonColor();
-            await AnimateMenuIn();
-            buttonPanel.SetActive(true);
-            board.SetActive(true); 
+            announcementPanel.SetActive(false); // Hide the announcement panel initially
+            HandleModeButtonColor(); // Adjust button colors based on the game mode
+            await AnimateMenuIn(); // Play the menu animation asynchronously
+            buttonPanel.SetActive(true); // Show the button panel after animation
+            board.SetActive(true); // Show the game board after animation
         }
     }
 
@@ -83,6 +83,7 @@ public class UIManager : MonoBehaviour
     }
     private void ResetTransformScales()
     {
+        // Reset the scale of various UI elements to Vector3.zero for animations
         if (background != null) background.transform.localScale = Vector3.zero;
         if (header != null) header.transform.localScale = Vector3.zero;
         if (choosePlayerPanel != null) choosePlayerPanel.transform.localScale = Vector3.zero;
@@ -92,6 +93,7 @@ public class UIManager : MonoBehaviour
     }
     private void DeactivateGameObjects()
     {
+        // Deactivate various UI elements to hide them from view
         if (buttonPanel != null) buttonPanel.SetActive(false);
         if (board != null) board.SetActive(false);
         if (header != null) header.SetActive(false);
@@ -168,7 +170,6 @@ public class UIManager : MonoBehaviour
         await Task.Delay(300);
     }
 
-    // Helper function to reset all button colors
     private void ResetAllButtonsColors()
     {
         playerVsPlayerButton.color = Color.white;

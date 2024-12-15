@@ -6,7 +6,7 @@ public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance { get; private set; }
 
-    [SerializeField] private AudioMixer audioMixer; // Reference to the Audio Mixer
+    [field: SerializeField] public AudioMixer AudioMixer { get; private set; }
 
     [SerializeField] private AudioSource musicSource;
     [SerializeField] private AudioSource gameSource;

@@ -2695,7 +2695,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6612e1333214bf46a3467e9c5a05ac7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  audioMixer: {fileID: 24100000, guid: b74e03b3361805047bc4f0661bff0652, type: 2}
+  <AudioMixer>k__BackingField: {fileID: 24100000, guid: b74e03b3361805047bc4f0661bff0652, type: 2}
   musicSource: {fileID: 937178055}
   gameSource: {fileID: 714232140}
   uiSource: {fileID: 1050242430}
@@ -3115,7 +3115,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74ae2dac65244854da6954e39ca3409a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainMixer: {fileID: 24100000, guid: b74e03b3361805047bc4f0661bff0652, type: 2}
   musicVolumeSlider: {fileID: 1094986253}
   gameVolumeSlider: {fileID: 1611829199}
   uiVolumeSlider: {fileID: 142535919}
