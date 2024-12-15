@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Inherits from the BasePlayerController class, handles AI logic separately from the Human logic
+/// </summary>
 public class AIPlayerController : BasePlayerController
 {
     private GameManager gameManager;
