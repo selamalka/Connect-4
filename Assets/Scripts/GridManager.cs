@@ -2,7 +2,7 @@ using MoonActive.Connect4;
 using UnityEngine;
 
 /// <summary>
-/// Manages the creation, initialization, and functionality of the Connect 4 grid.
+/// Manages the creation, initialization, and functionality of the grid.
 /// </summary>
 public class GridManager : MonoBehaviour
 {
@@ -116,37 +116,72 @@ public class GridManager : MonoBehaviour
 
     public bool CheckWin(int row, int column, PlayerColor player)
     {
-        // Defines directions to check for a win condition
+        Debug.Log($"Checking win at ({row}, {column}) for {player}");
+
         int[,] directions = new int[,]
         {
-            { 0, 1 },  // Horizontal
-            { 1, 0 },  // Vertical
-            { 1, 1 },  // Diagonal (\)
-            { 1, -1 }  // Diagonal (/)
+        { 0, 1 },  // Horizontal
+        { 1, 0 },  // Vertical
+        { 1, 1 },  // Diagonal (\)
+        { 1, -1 }  // Diagonal (/)
         };
 
-        // Check each direction for four connected cells
         for (int i = 0; i < directions.GetLength(0); i++)
         {
             int rowDir = directions[i, 0];
             int colDir = directions[i, 1];
 
-            int count = 1; // Include the starting cell
+            // Count consecutive cells in both directions
+            int count = 1 + CountInDirection(row, column, rowDir, colDir, player)
+                          + CountInDirection(row, column, -rowDir, -colDir, player);
 
-            // Count cells in the positive and negative directions
-            count += CountInDirection(row, column, rowDir, colDir, player);
-            count += CountInDirection(row, column, -rowDir, -colDir, player);
+            Debug.Log($"Count for {player} at ({row}, {column}) in direction [{rowDir}, {colDir}] is {count}");
 
-            // If four or more connected cells are found, declare a win
-            if (count >= 4)
+            // A valid win must be exactly 4 cells
+            if (count == 4)
             {
-                Debug.Log($"Win detected for Player {player} starting at Row: {row}, Column: {column}");
+                Debug.Log($"Win detected for {player} starting at Row: {row}, Column: {column} in direction [{rowDir}, {colDir}]");
                 return true;
             }
         }
 
-        return false; // No win condition met
+        return false; // No win detected
     }
+
+
+    /*    public bool CheckWin(int row, int column, PlayerColor player)
+        {
+            // Defines directions to check for a win condition
+            int[,] directions = new int[,]
+            {
+                { 0, 1 },  // Horizontal
+                { 1, 0 },  // Vertical
+                { 1, 1 },  // Diagonal (\)
+                { 1, -1 }  // Diagonal (/)
+            };
+
+            // Check each direction for four connected cells
+            for (int i = 0; i < directions.GetLength(0); i++)
+            {
+                int rowDir = directions[i, 0];
+                int colDir = directions[i, 1];
+
+                int count = 1; // Include the starting cell
+
+                // Count cells in the positive and negative directions
+                count += CountInDirection(row, column, rowDir, colDir, player);
+                count += CountInDirection(row, column, -rowDir, -colDir, player);
+
+                // If four or more connected cells are found, declare a win
+                if (count >= 4)
+                {
+                    Debug.Log($"Win detected for Player {player} starting at Row: {row}, Column: {column}");
+                    return true;
+                }
+            }
+
+            return false; // No win condition met
+        }*/
 
     public bool IsColumnFull(int column)
     {
