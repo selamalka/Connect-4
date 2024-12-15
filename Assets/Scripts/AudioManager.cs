@@ -8,6 +8,7 @@ public class AudioManager : MonoBehaviour
 
     [field: SerializeField] public AudioMixer AudioMixer { get; private set; }
 
+    [Header("Audio Sources")]
     [SerializeField] private AudioSource musicSource;
     [SerializeField] private AudioSource gameSource;
     [SerializeField] private AudioSource uiSource;
