@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
 {
     [field: Header("Game Status")]
     [field: SerializeField] public GameMode GameMode { get; private set; }
+    [field: SerializeField] public DifficultyMode DifficultyMode { get; private set; }
     [field: SerializeField] public bool IsGameActive { get; private set; }
     [field: SerializeField] public bool IsGamePaused { get; private set; }
 
@@ -42,6 +43,7 @@ public class GameManager : MonoBehaviour
 
     private void OnEnable()
     {
+        UIManager.OnSelectDifficultyMode += SetDifficultyMode;
         UIManager.OnSelectGameMode += SetGameMode;
         UIManager.OnConfirmPressed += StartGame;
         UIManager.OnRestart += RestartGame;
@@ -54,6 +56,7 @@ public class GameManager : MonoBehaviour
 
     private void OnDisable()
     {
+        UIManager.OnSelectDifficultyMode -= SetDifficultyMode;
         UIManager.OnSelectGameMode -= SetGameMode;
         UIManager.OnConfirmPressed -= StartGame;
         UIManager.OnRestart -= RestartGame;
@@ -366,6 +369,7 @@ public class GameManager : MonoBehaviour
         if (player is AIPlayerController aiPlayer)
         {
             aiPlayer.SetGameManager(this);
+            aiPlayer.SetDifficulty(DifficultyMode);
         }
     }
 
@@ -442,6 +446,10 @@ public class GameManager : MonoBehaviour
         BasePlayerController firstPlayer = GetPlayerControllerByColor(playerColor);
         CurrentPlayer = firstPlayer.PlayerColor;
         OnCurrentPlayerChanged?.Invoke(CurrentPlayer);
+    }
+    private void SetDifficultyMode(DifficultyMode difficultyMode)
+    {
+        DifficultyMode = difficultyMode;
     }
     public void SetIsGamePaused(bool value)
     {

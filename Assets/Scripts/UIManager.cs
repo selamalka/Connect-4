@@ -17,6 +17,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject header;
     [SerializeField] private GameObject background;
     [SerializeField] private GameObject buttonPanel;
+    [SerializeField] private GameObject difficultyModePanel;
     [SerializeField] private GameObject settingsPanel;
     [SerializeField] private GameObject settingsButton;
     [SerializeField] private GameObject announcementPanel;
@@ -26,8 +27,15 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Image playerVsPlayerButton;
     [SerializeField] private Image playerVsComputerButton;
     [SerializeField] private Image computerVsComputerButton;
-    [SerializeField] private Color chosenModeColor;
+    [SerializeField] private Color chosenGameModeColor;
 
+    [Header("Difficulty Modes")]
+    [SerializeField] private Image easyButton;
+    [SerializeField] private Image mediumButton;
+    [SerializeField] private Image hardButton;
+    [SerializeField] private Color chosenDifficultyModeColor;
+
+    public static Action<DifficultyMode> OnSelectDifficultyMode;
     public static Action<GameMode> OnSelectGameMode;
     public static event Action<GameMode> OnConfirmPressed;
     public static event Action OnRestart;
@@ -70,7 +78,8 @@ public class UIManager : MonoBehaviour
         if (GameManager != null)
         {
             announcementPanel.SetActive(false); // Hide the announcement panel initially
-            HandleModeButtonColor(); // Adjust button colors based on the game mode
+            HandleGameModeButtonColor(); // Adjust button colors based on the game mode
+            HandleDifficultyModeButtonColor(); // Adjust button colors based on the difficulty mode
             await AnimateMenuIn(); // Play the menu animation asynchronously
             buttonPanel.SetActive(true); // Show the button panel after animation
             board.SetActive(true); // Show the game board after animation
@@ -90,6 +99,7 @@ public class UIManager : MonoBehaviour
         if (announcementPanel != null) announcementPanel.transform.localScale = Vector3.zero;
         if (announcementText != null) announcementText.transform.localScale = Vector3.zero;
         if (settingsPanel != null) settingsPanel.transform.localScale = Vector3.zero;
+        if (difficultyModePanel != null) difficultyModePanel.transform.localScale = Vector3.zero;
     }
     private void DeactivateGameObjects()
     {
@@ -99,24 +109,48 @@ public class UIManager : MonoBehaviour
         if (header != null) header.SetActive(false);
         if (choosePlayerPanel != null) choosePlayerPanel.SetActive(false);
     }
-    private void HandleModeButtonColor()
+    private void HandleGameModeButtonColor()
     {
         // Reset all buttons to white first
-        ResetAllButtonsColors();
+        ResetAllGameModeButtonsColors();
 
         // Highlight the selected mode's button
         switch (GameManager.GameMode)
         {
             case GameMode.PlayerVsPlayer:
-                playerVsPlayerButton.color = chosenModeColor;
+                playerVsPlayerButton.color = chosenGameModeColor;
                 break;
 
             case GameMode.PlayerVsComputer:
-                playerVsComputerButton.color = chosenModeColor;
+                playerVsComputerButton.color = chosenGameModeColor;
                 break;
 
             case GameMode.ComputerVsComputer:
-                computerVsComputerButton.color = chosenModeColor;
+                computerVsComputerButton.color = chosenGameModeColor;
+                break;
+
+            default:
+                break;
+        }
+    }
+    private void HandleDifficultyModeButtonColor()
+    {
+        // Reset all buttons to white first
+        ResetAllDifficultyModeButtonsColors();
+
+        // Highlight the selected mode's button
+        switch (GameManager.DifficultyMode)
+        {
+            case DifficultyMode.Easy:
+                easyButton.color = chosenDifficultyModeColor;
+                break;
+
+            case DifficultyMode.Medium:
+                mediumButton.color = chosenDifficultyModeColor;
+                break;
+
+            case DifficultyMode.Hard:
+                hardButton.color = chosenDifficultyModeColor;
                 break;
 
             default:
@@ -152,11 +186,13 @@ public class UIManager : MonoBehaviour
 
         choosePlayerPanel.SetActive(true);
         choosePlayerPanel.transform.DOScale(1f, 0.3f).SetEase(Ease.OutBack);
+        difficultyModePanel.transform.DOScale(1f, 0.3f).SetEase(Ease.OutBack);
     }
     private async Task AnimateMenuOut()
     {
         AudioManager.Instance.PlayAudio(AudioType.UI, "Menu Out 1");
         choosePlayerPanel.transform.DOScale(0f, 0.2f).SetEase(Ease.InBack);
+        difficultyModePanel.transform.DOScale(0f, 0.2f).SetEase(Ease.InBack);
         await Task.Delay(200);
         choosePlayerPanel.SetActive(false);
 
@@ -170,11 +206,33 @@ public class UIManager : MonoBehaviour
         await Task.Delay(300);
     }
 
-    private void ResetAllButtonsColors()
+    private void ResetAllGameModeButtonsColors()
     {
         playerVsPlayerButton.color = Color.white;
         playerVsComputerButton.color = Color.white;
         computerVsComputerButton.color = Color.white;
+    }
+
+    private void ResetAllDifficultyModeButtonsColors()
+    {
+        easyButton.color = Color.white;
+        mediumButton.color = Color.white;
+        hardButton.color = Color.white;
+    }
+
+    // Unity event
+    public void EasyModeButton() => SelectDifficultyMode(DifficultyMode.Easy);
+
+    // Unity event
+    public void MediumModeButton() => SelectDifficultyMode(DifficultyMode.Medium);
+
+    // Unity event
+    public void HardModeButton() => SelectDifficultyMode(DifficultyMode.Hard);
+
+    public void SelectDifficultyMode(DifficultyMode difficultyMode)
+    {
+        OnSelectDifficultyMode?.Invoke(difficultyMode);
+        HandleDifficultyModeButtonColor();
     }
 
     // Unity event
@@ -242,21 +300,21 @@ public class UIManager : MonoBehaviour
     public void PlayerVsPlayerButton()
     {
         OnSelectGameMode?.Invoke(GameMode.PlayerVsPlayer);
-        HandleModeButtonColor();
+        HandleGameModeButtonColor();
     }
 
     // Unity event
     public void PlayerVsComputerButton()
     {
         OnSelectGameMode?.Invoke(GameMode.PlayerVsComputer);
-        HandleModeButtonColor();
+        HandleGameModeButtonColor();
     }
 
     // Unity event
     public void ComputerVsComputerButton()
     {
         OnSelectGameMode?.Invoke(GameMode.ComputerVsComputer);
-        HandleModeButtonColor();
+        HandleGameModeButtonColor();
     }
 
     // Unity event
