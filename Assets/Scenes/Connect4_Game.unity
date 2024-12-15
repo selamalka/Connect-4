@@ -787,10 +787,10 @@ MonoBehaviour:
   m_FillRect: {fileID: 35432765}
   m_HandleRect: {fileID: 1479509393}
   m_Direction: 0
-  m_MinValue: 0
+  m_MinValue: 0.1
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0
+  m_Value: 0.1
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -3341,8 +3341,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7835454392941f44dad582ad58d5ab9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <GameMode>k__BackingField: 2
-  <DifficultyMode>k__BackingField: 1
+  <GameMode>k__BackingField: 1
+  <DifficultyMode>k__BackingField: 0
   <IsGameActive>k__BackingField: 0
   <IsGamePaused>k__BackingField: 0
   <CurrentPlayer>k__BackingField: 0
@@ -4135,10 +4135,10 @@ MonoBehaviour:
   m_FillRect: {fileID: 1393487003}
   m_HandleRect: {fileID: 429170788}
   m_Direction: 0
-  m_MinValue: 0
+  m_MinValue: 0.1
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0
+  m_Value: 0.1
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -6057,10 +6057,10 @@ MonoBehaviour:
   m_FillRect: {fileID: 1941848780}
   m_HandleRect: {fileID: 1875698072}
   m_Direction: 0
-  m_MinValue: 0
+  m_MinValue: 0.1
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0
+  m_Value: 0.1
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
