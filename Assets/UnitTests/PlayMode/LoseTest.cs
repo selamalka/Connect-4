@@ -180,7 +180,6 @@ public class LoseTest
             {
                 rowState += gridManager.GetCell(row, col).PlayerInCell + " "; // Add cell content to the row state.
             }
-            Debug.Log($"Row {row}: {rowState}"); // Output the row state.
         }
     }
 }

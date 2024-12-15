@@ -20,7 +20,6 @@ public class AIPlayerController : BasePlayerController
     {
         StartCoroutine(PerformAIMove());
     }
-
     private IEnumerator PerformAIMove()
     {
         // Wait while the game is paused
@@ -75,7 +74,6 @@ public class AIPlayerController : BasePlayerController
 
         return GetRandomValidColumn(); // Default fallback
     }
-
     private int GetBestColumn()
     {
         // Try to win
@@ -103,7 +101,6 @@ public class AIPlayerController : BasePlayerController
         // Default to random
         return GetRandomValidColumn();
     }
-
     private int GetWinningColumn(PlayerColor player)
     {
         for (int column = 0; column < gridManager.Columns; column++)
@@ -129,7 +126,6 @@ public class AIPlayerController : BasePlayerController
 
         return -1; // No winning move found
     }
-
     private int GetStrategicColumn(PlayerColor currentPlayer, PlayerColor opponent)
     {
         for (int column = 0; column < gridManager.Columns; column++)
@@ -155,7 +151,6 @@ public class AIPlayerController : BasePlayerController
 
         return -1; // No immediate threat found
     }
-
     private int GetHeuristicColumn()
     {
         int[] columnPriority = { 3, 2, 4, 1, 5, 0, 6 };
@@ -170,7 +165,6 @@ public class AIPlayerController : BasePlayerController
 
         return -1; // Default fallback
     }
-
     private int GetRandomValidColumn()
     {
         var validColumns = new List<int>();
@@ -190,7 +184,6 @@ public class AIPlayerController : BasePlayerController
     {
         this.gameManager = gameManager;
     }
-
     public void SetDifficulty(DifficultyMode difficulty)
     {
         this.difficulty = difficulty;
