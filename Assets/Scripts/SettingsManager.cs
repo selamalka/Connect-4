@@ -30,7 +30,6 @@ public class SettingsManager : MonoBehaviour
     private void Start()
     {
         mainMixer = AudioManager.Instance.AudioMixer;
-        DefaultSettings();
         LoadSettings();
     }
 
@@ -44,7 +43,7 @@ public class SettingsManager : MonoBehaviour
     private void LoadSettings()
     {
         // Load saved volume levels from PlayerPrefs
-        float musicVolume = PlayerPrefs.GetFloat("MusicVolume", 0.8f);
+        float musicVolume = PlayerPrefs.GetFloat("MusicVolume", 0.6f);
         float gameVolume = PlayerPrefs.GetFloat("GameVolume", 0.8f);
         float uiVolume = PlayerPrefs.GetFloat("UIVolume", 0.8f);
 
@@ -61,7 +60,7 @@ public class SettingsManager : MonoBehaviour
     private void DefaultSettings()
     {
         // Reset slider values to default levels
-        musicVolumeSlider.value = 0.8f;
+        musicVolumeSlider.value = 0.6f;
         gameVolumeSlider.value = 0.8f;
         uiVolumeSlider.value = 0.8f;
 

@@ -12,6 +12,89 @@ public class GridManager : MonoBehaviour
 
     private Cell[,] gridCells; // 2D array to store and track individual cells
 
+    public void ClearGrid()
+    {
+        // Find and destroy all active disks in the scene
+        var allDisks = FindObjectsOfType<Disk>();
+        foreach (Disk disk in allDisks)
+        {
+            Destroy(disk.gameObject);
+        }
+
+        // Reset all cells to their initial empty state
+        var allCells = FindObjectsOfType<Cell>();
+        for (int i = 0; i < allCells.Length; i++)
+        {
+            Cell cell = allCells[i];
+            Collider2D cellCollider = cell.GetComponent<Collider2D>();
+
+            cell.SetPlayerInCell(PlayerColor.None); // Set cell to empty
+            cell.GetComponent<Collider2D>().enabled = false; // Disable collider
+            if (cell.Row == 0) cellCollider.enabled = true; // Enable bottom row colliders
+        }
+    }
+    public bool CheckDraw()
+    {
+        // Check if every cell in the grid is occupied
+        for (int row = 0; row < rows; row++)
+        {
+            for (int col = 0; col < Columns; col++)
+            {
+                if (GetCell(row, col).PlayerInCell == PlayerColor.None)
+                {
+                    return false; // Empty cell found = not a draw
+                }
+            }
+        }
+
+        return true; // No empty cells. it's a draw
+    }
+    public bool CheckWin(int row, int column, PlayerColor player)
+    {
+        int[,] directions = new int[,]
+        {
+        { 0, 1 },  // Horizontal
+        { 1, 0 },  // Vertical
+        { 1, 1 },  // Diagonal (\)
+        { 1, -1 }  // Diagonal (/)
+        };
+
+        for (int i = 0; i < directions.GetLength(0); i++)
+        {
+            int rowDir = directions[i, 0];
+            int colDir = directions[i, 1];
+
+            // Count consecutive cells in both directions
+            int count = 1 + CountInDirection(row, column, rowDir, colDir, player)
+                          + CountInDirection(row, column, -rowDir, -colDir, player);
+
+            // A valid win must be exactly 4 cells
+            if (count == 4)
+            {
+                return true;
+            }
+        }
+
+        return false; // No win detected
+    }
+    private int CountInDirection(int startRow, int startCol, int rowDir, int colDir, PlayerColor player)
+    {
+        // Counts consecutive cells in a specific direction matching the given player
+        int count = 0;
+        int row = startRow + rowDir;
+        int col = startCol + colDir;
+
+        // Continue counting while in bounds and matching the player's color
+        while (IsInBounds(row, col) && GetCell(row, col)?.PlayerInCell == player)
+        {
+            count++;
+            row += rowDir;
+            col += colDir;
+        }
+
+        return count; // Return total count in this direction
+    }
+
     public void InitializeGrid(GameMode notInUse)
     {
         // Initialize grid array with dimensions matching rows and columns
@@ -23,7 +106,6 @@ public class GridManager : MonoBehaviour
         // Ensure the number of cell objects matches the expected grid dimensions
         if (cellColliders.Length != rows * Columns)
         {
-            Debug.LogError($"Mismatch between colliders and grid dimensions! Expected {rows * Columns}, but found {cellColliders.Length}.");
             return;
         }
 
@@ -56,133 +138,6 @@ public class GridManager : MonoBehaviour
             }
         }
     }
-
-    public void ClearGrid()
-    {
-        // Find and destroy all active disks in the scene
-        var allDisks = FindObjectsOfType<Disk>();
-        foreach (Disk disk in allDisks)
-        {
-            Destroy(disk.gameObject);
-        }
-
-        // Reset all cells to their initial empty state
-        var allCells = FindObjectsOfType<Cell>();
-        for (int i = 0; i < allCells.Length; i++)
-        {
-            Cell cell = allCells[i];
-            Collider2D cellCollider = cell.GetComponent<Collider2D>();
-
-            cell.SetPlayerInCell(PlayerColor.None); // Set cell to empty
-            cell.GetComponent<Collider2D>().enabled = false; // Disable collider
-            if (cell.Row == 0) cellCollider.enabled = true; // Enable bottom row colliders
-        }
-    }
-
-    private int CountInDirection(int startRow, int startCol, int rowDir, int colDir, PlayerColor player)
-    {
-        // Counts consecutive cells in a specific direction matching the given player
-        int count = 0;
-        int row = startRow + rowDir;
-        int col = startCol + colDir;
-
-        // Continue counting while in bounds and matching the player's color
-        while (IsInBounds(row, col) && GetCell(row, col)?.PlayerInCell == player)
-        {
-            count++;
-            row += rowDir;
-            col += colDir;
-        }
-
-        return count; // Return total count in this direction
-    }
-
-    public bool CheckDraw()
-    {
-        // Check if every cell in the grid is occupied
-        for (int row = 0; row < rows; row++)
-        {
-            for (int col = 0; col < Columns; col++)
-            {
-                if (GetCell(row, col).PlayerInCell == PlayerColor.None)
-                {
-                    return false; // Empty cell found = not a draw
-                }
-            }
-        }
-
-        return true; // No empty cells. it's a draw
-    }
-
-    public bool CheckWin(int row, int column, PlayerColor player)
-    {
-        Debug.Log($"Checking win at ({row}, {column}) for {player}");
-
-        int[,] directions = new int[,]
-        {
-        { 0, 1 },  // Horizontal
-        { 1, 0 },  // Vertical
-        { 1, 1 },  // Diagonal (\)
-        { 1, -1 }  // Diagonal (/)
-        };
-
-        for (int i = 0; i < directions.GetLength(0); i++)
-        {
-            int rowDir = directions[i, 0];
-            int colDir = directions[i, 1];
-
-            // Count consecutive cells in both directions
-            int count = 1 + CountInDirection(row, column, rowDir, colDir, player)
-                          + CountInDirection(row, column, -rowDir, -colDir, player);
-
-            Debug.Log($"Count for {player} at ({row}, {column}) in direction [{rowDir}, {colDir}] is {count}");
-
-            // A valid win must be exactly 4 cells
-            if (count == 4)
-            {
-                Debug.Log($"Win detected for {player} starting at Row: {row}, Column: {column} in direction [{rowDir}, {colDir}]");
-                return true;
-            }
-        }
-
-        return false; // No win detected
-    }
-
-
-    /*    public bool CheckWin(int row, int column, PlayerColor player)
-        {
-            // Defines directions to check for a win condition
-            int[,] directions = new int[,]
-            {
-                { 0, 1 },  // Horizontal
-                { 1, 0 },  // Vertical
-                { 1, 1 },  // Diagonal (\)
-                { 1, -1 }  // Diagonal (/)
-            };
-
-            // Check each direction for four connected cells
-            for (int i = 0; i < directions.GetLength(0); i++)
-            {
-                int rowDir = directions[i, 0];
-                int colDir = directions[i, 1];
-
-                int count = 1; // Include the starting cell
-
-                // Count cells in the positive and negative directions
-                count += CountInDirection(row, column, rowDir, colDir, player);
-                count += CountInDirection(row, column, -rowDir, -colDir, player);
-
-                // If four or more connected cells are found, declare a win
-                if (count >= 4)
-                {
-                    Debug.Log($"Win detected for Player {player} starting at Row: {row}, Column: {column}");
-                    return true;
-                }
-            }
-
-            return false; // No win condition met
-        }*/
-
     public bool IsColumnFull(int column)
     {
         // Check if all rows in the specified column are occupied
@@ -196,7 +151,6 @@ public class GridManager : MonoBehaviour
 
         return true; // All cells are filled
     }
-
     private bool IsInBounds(int row, int col)
     {
         // Validates if a cell is within the grid's boundaries
@@ -214,10 +168,8 @@ public class GridManager : MonoBehaviour
             }
         }
 
-        Debug.LogError($"Column {column} is full but was not detected earlier!");
         return -1; // Return -1 if the column is full (shouldn't happen if IsColumnFull is used)
     }
-
     public Cell GetCell(int row, int column)
     {
         // Returns the cell at the specified position or null if out of bounds

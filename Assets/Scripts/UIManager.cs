@@ -157,10 +157,6 @@ public class UIManager : MonoBehaviour
                 break;
         }
     }
-    public void SelectGameMode(GameMode mode)
-    {
-        OnSelectGameMode?.Invoke(mode);
-    }
     private void OnAnnouncementAction(string announcement)
     {
         board.SetActive(false);
@@ -168,6 +164,10 @@ public class UIManager : MonoBehaviour
         announcementText.text = announcement;
         announcementPanel.transform.DOScale(1, 0.3f).SetEase(Ease.OutBack)
             .OnComplete(() => announcementText.transform.DOScale(1, 0.3f).SetEase(Ease.OutQuart));
+    }
+    public void SelectGameMode(GameMode mode)
+    {
+        OnSelectGameMode?.Invoke(mode);
     }
 
     private async Task AnimateMenuIn()
@@ -212,7 +212,6 @@ public class UIManager : MonoBehaviour
         playerVsComputerButton.color = Color.white;
         computerVsComputerButton.color = Color.white;
     }
-
     private void ResetAllDifficultyModeButtonsColors()
     {
         easyButton.color = Color.white;
