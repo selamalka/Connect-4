@@ -439,6 +439,8 @@ public class GameManager : MonoBehaviour
     private void SetGameMode(GameMode gameMode)
     {
         GameMode = gameMode;
+
+        if (gameMode == GameMode.ComputerVsComputer) raycastBlocker.SetActive(true);
     }
     private void SetOpeningPlayer(PlayerColor playerColor)
     {

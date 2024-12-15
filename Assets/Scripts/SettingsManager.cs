@@ -7,6 +7,7 @@ using UnityEngine.UI;
 /// </summary>
 public class SettingsManager : MonoBehaviour
 {
+    [Header("Audio Sliders")]
     [SerializeField] private Slider musicVolumeSlider;
     [SerializeField] private Slider gameVolumeSlider;
     [SerializeField] private Slider uiVolumeSlider;
