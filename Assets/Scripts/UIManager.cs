@@ -4,6 +4,9 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Manages everything UI related
+/// </summary>
 public class UIManager : MonoBehaviour
 {
     [Header("Panels")]
