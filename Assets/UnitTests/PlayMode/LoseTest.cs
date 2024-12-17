@@ -90,6 +90,19 @@ public class LoseTest
         }
     }
 
+    private void LogGridState()
+    {
+        // Log the current state of the grid for debugging purposes.
+        for (int row = 0; row < Rows; row++)
+        {
+            string rowState = "";
+            for (int col = 0; col < Columns; col++)
+            {
+                rowState += gridManager.GetCell(row, col).PlayerInCell + " "; // Add cell content to the row state.
+            }
+        }
+    }
+
     [UnityTest]
     public IEnumerator CheckLoseDiagonal()
     {
@@ -168,18 +181,5 @@ public class LoseTest
         Assert.IsFalse(gridManager.CheckWin(3, 0, player1), "False positive win detected for Player 1 anti-diagonally!");
 
         yield return null; // Allow Unity to process frame updates.
-    }
-
-    private void LogGridState()
-    {
-        // Log the current state of the grid for debugging purposes.
-        for (int row = 0; row < Rows; row++)
-        {
-            string rowState = "";
-            for (int col = 0; col < Columns; col++)
-            {
-                rowState += gridManager.GetCell(row, col).PlayerInCell + " "; // Add cell content to the row state.
-            }
-        }
     }
 }
